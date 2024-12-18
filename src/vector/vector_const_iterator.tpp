@@ -2,7 +2,7 @@
 // Created by sergey on 05.12.24.
 //
 
-#include "vector.h"
+#pragma once
 
 namespace s21 {
 

@@ -1,17 +1,9 @@
 //
 // Created by sergey on 04.12.24.
 //
+#pragma once
 
 namespace s21 {
-
-template <typename Input, typename Output>
-void copy(Input begin, Input end, Output dest) {
-    while (begin != end) {
-        *dest = *begin;
-        ++begin;
-        ++dest;
-    }
-}
 
 template <typename T>
 vector<T>::vector(std::initializer_list<T> const &items)

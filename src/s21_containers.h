@@ -5,8 +5,7 @@
 #ifndef S21_CONTAINERS_H
 #define S21_CONTAINERS_H
 
-#include <cmath>
-
+#include "./linked_list/linked_list.h"
 #include "./vector/vector.h"
 
 #endif  // S21_CONTAINERS_H

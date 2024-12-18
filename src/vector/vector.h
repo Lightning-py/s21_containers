@@ -5,7 +5,7 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include <stdexcept>
+#include "../shared/shared.cpp"
 
 namespace s21 {
 
