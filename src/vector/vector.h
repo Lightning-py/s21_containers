@@ -74,6 +74,12 @@ class vector {
 template <typename T>
 class vector<T>::VectorIterator {
    public:
+    using iterator_category = std::random_access_iterator_tag;
+    using value_type = typename vector<T>::value_type;
+    using difference_type = std::ptrdiff_t;
+    using pointer = vector<T>::pointer;
+    using reference = vector<T>::reference;
+
     VectorIterator() : ptr_(nullptr) {}
     explicit VectorIterator(pointer ptr) : ptr_(ptr) {}
 
@@ -95,6 +101,12 @@ class vector<T>::VectorIterator {
 template <typename T>
 class vector<T>::VectorConstIterator {
    public:
+    using iterator_category = std::random_access_iterator_tag;
+    using value_type = typename vector<T>::value_type;
+    using difference_type = std::ptrdiff_t;
+    using pointer = vector<T>::pointer;
+    using reference = vector<T>::reference;
+
     explicit VectorConstIterator(pointer ptr) : ptr_(ptr) {}
 
     const_reference operator*() const;
@@ -102,6 +114,10 @@ class vector<T>::VectorConstIterator {
     VectorConstIterator operator--();
     VectorConstIterator operator++(int);
     VectorConstIterator operator--(int);
+    VectorConstIterator operator+(int n);
+    VectorConstIterator operator-(int n);
+    size_type operator-(const VectorConstIterator& other);
+
     bool operator==(const VectorConstIterator& other) const;
     bool operator!=(const VectorConstIterator& other) const;
 

@@ -264,3 +264,10 @@ TEST(VECTOR, iterator) {
         counter++;
     }
 }
+
+TEST(VECTOR, std_copy) {
+    s21::vector<int> a = {1, 2, 3, 4, 5};
+    s21::vector<int> b(5);
+
+    std::copy(a.begin(), a.end(), b.begin());
+}

@@ -43,6 +43,24 @@ vector<T>::VectorConstIterator::operator--(int) {
 }
 
 template <typename T>
+typename vector<T>::VectorConstIterator
+vector<T>::VectorConstIterator::operator+(int n) {
+    return iterator(ptr_ + n);
+}
+
+template <typename T>
+typename vector<T>::VectorConstIterator
+vector<T>::VectorConstIterator::operator-(int n) {
+    return iterator(ptr_ - n);
+}
+
+template <typename T>
+typename vector<T>::size_type vector<T>::VectorConstIterator::operator-(
+    const VectorConstIterator& other) {
+    return ptr_ - other.ptr_;
+}
+
+template <typename T>
 bool vector<T>::VectorConstIterator::operator==(
     const VectorConstIterator& other) const {
     return ptr_ == other.ptr_;

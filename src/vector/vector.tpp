@@ -10,7 +10,7 @@ vector<T>::vector(std::initializer_list<T> const &items)
     : size_(items.size()),
       capacity_(items.size()),
       data_(new value_type[items.size()]) {
-    copy(items.begin(), items.end(), begin());
+    std::copy(items.begin(), items.end(), begin());
 }
 
 template <typename T>
@@ -18,7 +18,7 @@ vector<T>::vector(const vector &v) : size_(v.size()) {
     data_ = new value_type[v.capacity_];
     capacity_ = v.capacity_;
     // memcpy(data_, v.data_, size_ * sizeof(value_type));
-    copy(v.cbegin(), v.cend(), begin());
+    std::copy(v.cbegin(), v.cend(), begin());
 }
 
 template <typename T>
@@ -106,7 +106,7 @@ void vector<T>::reserve(const size_type size) {
 
     auto new_data = new value_type[size];
     // memcpy(new_data, data_, size_ * sizeof(value_type));
-    copy(begin(), end(), new_data);
+    std::copy(begin(), end(), new_data);
     delete[] data_;
     data_ = new_data;
     capacity_ = size;
@@ -121,7 +121,7 @@ template <typename T>
 void vector<T>::shrink_to_fit() {
     if (size_ < capacity_) {
         auto new_data = new value_type[size_];
-        copy(this->begin(), this->end(), new_data);
+        std::copy(this->begin(), this->end(), new_data);
         delete[] data_;
         data_ = new_data;
         capacity_ = size_;
