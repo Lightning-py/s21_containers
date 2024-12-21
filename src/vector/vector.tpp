@@ -185,7 +185,7 @@ void vector<T>::pop_back() {
 }
 
 template <typename T>
-void vector<T>::swap(vector &other) {
+void vector<T>::swap(vector &other) noexcept {
     std::swap(size_, other.size_);
     std::swap(data_, other.data_);
     std::swap(capacity_, other.capacity_);

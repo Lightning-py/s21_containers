@@ -23,8 +23,6 @@ class ListNode {
 
     ~ListNode() = default;
 
-    T _data() const { return data; }
-
     T data;
     ListNode<T>* next;
     ListNode<T>* prev;

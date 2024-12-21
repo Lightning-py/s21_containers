@@ -22,6 +22,8 @@ class list {
     using iterator = ListIterator;
     using const_iterator = ListConstIterator;
     using size_type = size_t;
+    using pointer = T*;
+    using const_pointer = const T*;
 
     list() : head(nullptr), tail(nullptr), size_(0) {}
     explicit list(size_type n);
@@ -32,18 +34,24 @@ class list {
     ~list();
 
     iterator begin() { return iterator(head); }
-    iterator end() { return iterator(tail->next); }  // always returns a nullptr
+    iterator end() { return iterator(nullptr); }  // always returns a nullptr
+
+    const_iterator cbegin() const { return const_iterator(head); }
+    const_iterator cend() const {
+        return const_iterator(tail->next);
+    }  // always returns a nullptr
 
     iterator rbegin() { return iterator(tail); }
     iterator rend() { return iterator(nullptr); }
 
-    const_reference front() const { return head->value; }
-    const_reference back() const { return tail->value; }
+    const_reference front() const { return head->data; }
+    const_reference back() const { return tail->data; }
 
-    bool empty() const { return size_ == 0; }
+    [[nodiscard]] bool empty() const { return size_ == 0; }
 
     void clear();
     iterator insert(iterator pos, const_reference value);
+    iterator insert(const_iterator pos, const_reference value);
     void erase(iterator pos);
     void push_back(const_reference value);
     void pop_back();
@@ -57,9 +65,9 @@ class list {
     void unique();
     void sort();
 
-    size_type size() const { return size_; }
+    [[nodiscard]] size_type size() const { return size_; }
 
-   private:
+   protected:
     ListNode<T>* head;
     ListNode<T>* tail;
     size_type size_;
@@ -70,39 +78,60 @@ class list {
 template <typename T>
 class list<T>::ListIterator {
    public:
+    using iterator_category = std::bidirectional_iterator_tag;
+    using value_type = list<T>::value_type;
+    using difference_type = std::ptrdiff_t;
+    using pointer = ListNode<T>*;
+    using reference = list<T>::reference;
+
     ListIterator() : node(nullptr) {}
-    explicit ListIterator(ListNode<T>* node) : node(node) {}
+    explicit ListIterator(pointer node) : node(node) {}
+    explicit ListIterator(ListConstIterator& other) : node(other.node) {}
 
     reference operator*();
     ListIterator& operator++();
     ListIterator& operator--();
     ListIterator operator++(int);
     ListIterator operator--(int);
-    ListIterator operator+(int n);
-    ListIterator operator-(int n);
-    int operator-(const ListIterator& other);
+    ListIterator operator+(int n) const;
+    ListIterator operator-(int n) const;
+    int operator-(const ListIterator& other) const;
     bool operator==(const ListIterator& other) const;
     bool operator!=(const ListIterator& other) const;
 
-    ListNode<T>* pointer() { return node; }
+    pointer pointer_() { return node; }
 
-   private:
-    ListNode<T>* node;
+   protected:
+    pointer node;
 };
 
 template <typename T>
 class list<T>::ListConstIterator {
    public:
-    explicit ListConstIterator(ListNode<T> node) : node(node) {}
+    using iterator_category = std::bidirectional_iterator_tag;
+    using value_type = list<T>::value_type;
+    using difference_type = std::ptrdiff_t;
+    using pointer = const ListNode<T>*;
+    using reference = list<T>::const_reference;
+
+    explicit ListConstIterator(const pointer node) : node(node) {}
+    explicit ListConstIterator(const ListIterator& other) : node(other.node) {}
 
     const_reference operator*() const;
     ListConstIterator& operator++();
     ListConstIterator& operator--();
+    ListConstIterator operator++(int);
+    ListConstIterator operator--(int);
+    ListConstIterator operator+(int n) const;
+    ListConstIterator operator-(int n) const;
+    int operator-(const ListConstIterator& other) const;
+    bool operator==(const ListConstIterator& other) const;
+    bool operator!=(const ListConstIterator& other) const;
 
-    const ListNode<T>* pointer() const { return node; }
+    pointer pointer_() const { return node; }
 
-   private:
-    const ListNode<T>* node;
+   protected:
+    pointer node;
 };
 
 }  // namespace s21

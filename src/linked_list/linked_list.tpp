@@ -29,7 +29,7 @@ void list<T>::pop_back() {
         ListNode<T>* prev = tail->prev;
         delete tail;
         tail = prev;
-        tail->prev = nullptr;
+        tail->next = nullptr;
         size_--;
     }
 }
@@ -102,9 +102,12 @@ list<T>::list(std::initializer_list<T> const& items) {
 
 template <typename T>
 list<T>::list(const list& other) {
-    size_ = other.size_;
-    for (auto item : other) {
-        push_back(item);
+    size_ = 0;
+    head = nullptr;
+    tail = nullptr;
+
+    for (auto iter = other.cbegin(); iter != other.cend(); ++iter) {
+        push_back(*iter);
     }
 }
 
@@ -141,47 +144,78 @@ template <typename T>
 typename list<T>::iterator list<T>::insert(iterator pos,
                                            const_reference value) {
     if (size_ == 0) {
-        auto* node = new ListNode<T>(value, nullptr, nullptr);
-        head = node;
-        tail = node;
+        push_back(value);
         return begin();
     }
 
-    if (pos.pointer() == head) {
+    if (pos.pointer_() == head) {
         push_front(value);
         return begin();
     }
 
-    auto node = new ListNode<T>(value, pos.pointer()->prev, pos.pointer());
-    pos.pointer()->prev->next = node;
-    pos.pointer()->prev = node;
+    auto node = new ListNode<T>(value, pos.pointer_()->prev, pos.pointer_());
+    pos.pointer_()->prev->next = node;
+    pos.pointer_()->prev = node;
     return iterator(node);
 }
 
+// template <typename T>
+// typename list<T>::iterator list<T>::insert(const_iterator pos,
+//                                            const_reference value) {
+//     if (size_ == 0) {
+//         push_back(value);
+//         return begin();
+//     }
+//
+//     if (pos.pointer_() == head) {
+//         push_front(value);
+//         return begin();
+//     }
+//
+//     auto node = new ListNode<T>(value, pos.pointer_()->prev, pos.pointer_());
+//     pos.pointer_()->prev->next = node;
+//     pos.pointer_()->prev = node;
+//     return iterator(node);
+// }
+
 template <typename T>
 void list<T>::erase(iterator pos) {
-    if (pos.pointer() == head) {
-        if (size_ == 1) {
+    if (size_ == 1) {
+        delete pos.pointer_();
+        size_ = 0;
+        head = nullptr;
+        tail = nullptr;
+    } else if (size_ > 1) {
+        if (pos.pointer_() == head) {
+            auto node = pos.pointer_()->next;
             delete head;
-            head = nullptr;
-            tail = nullptr;
-            size_ = 0;
-        } else {
-            head = head->next;
-            delete head->prev;
-            head->prev = nullptr;
-        }
-        return;
-    }
+            head = node;
+            node->prev = nullptr;
 
-    if (pos.pointer() == tail) {
-        tail = tail->prev;
-        delete tail->next;
-        return;
+            if (size_ == 2) {
+                tail = head;
+            }
+            size_--;
+        } else if (pos.pointer_() == tail) {
+            auto node = pos.pointer_()->prev;
+            delete tail;
+            tail = node;
+            node->next = nullptr;
+
+            if (size_ == 2) {
+                tail = head;
+            }
+            size_--;
+        } else {
+            auto prev = pos.pointer_()->prev;
+            auto next = pos.pointer_()->next;
+
+            delete pos.pointer_();
+            prev->next = next;
+            next->prev = prev;
+            size_--;
+        }
     }
-    pos.pointer()->prev->next = pos.pointer()->next;
-    pos.pointer()->next->prev = pos.pointer()->prev;
-    delete pos.pointer();
 }
 
 template <typename T>
@@ -198,7 +232,7 @@ void list<T>::merge(list& other) {
     auto iter2 = other.begin();
 
     while (iter1 != end() && iter2 != other.end()) {
-        if (iter1->pointer() >= iter2->pointer()) {
+        if (iter1.pointer_()->data <= iter2.pointer_()->data) {
             temp.push_back(*iter1);
             ++iter1;
         } else {
@@ -223,25 +257,14 @@ void list<T>::merge(list& other) {
 
 template <typename T>
 void list<T>::splice(const_iterator pos, list& other) {
-    if (size_ == 0) return;
-
-    if (other.size_ == 0) {
-        if (size_ == 1) {
-            swap(other);
-        } else if (size_ > 1) {
-            pos.pointer()->prev->next = nullptr;
-            other.head = pos.pointer()->prev;
-            other.tail = tail;
-            tail = pos.pointer()->prev;
-            pos.pointer()->prev = nullptr;
+    if (this != &other) {
+        for (auto itr = other.begin(); itr != other.end(); ++itr) {
+            // insert(ListIterator(pos.pointer_()), *itr);
+            // ListNode<T>* it = pos.pointer_();
+            insert(begin() + (pos - cbegin()), *itr);
         }
-        return;
+        other.clear();
     }
-
-    other.tail->next = pos.pointer();
-    pos.pointer()->prev = other.tail;
-    other.tail = tail;
-    tail = pos.pointer()->prev;
 }
 
 template <typename T>
@@ -251,6 +274,7 @@ void list<T>::reverse() {
     auto iter = rbegin();
     while (iter != rend()) {
         temp.push_back(*iter);
+        --iter;
     }
 
     clear();
@@ -266,9 +290,11 @@ void list<T>::unique() {
             fine = *iter != *check;
         }
         if (fine) {
-            push_back(*iter);
+            temp.push_back(*iter);
         }
     }
+
+    swap(temp);
 }
 
 template <typename T>
@@ -278,7 +304,7 @@ void list<T>::mergeSort(list<T>& other) {
     list<T> first;
     list<T> second;
 
-    auto iter = begin();
+    auto iter = other.begin();
     int counter = 0;
     while (counter < (other.size_ / 2)) {
         first.push_back(*iter);
@@ -286,7 +312,7 @@ void list<T>::mergeSort(list<T>& other) {
         counter++;
     }
 
-    while (iter != end()) {
+    while (iter != other.end()) {
         second.push_back(*iter);
         ++iter;
     }
@@ -295,7 +321,7 @@ void list<T>::mergeSort(list<T>& other) {
     mergeSort(second);
     first.merge(second);
 
-    swap(first, other);
+    other.swap(first);
 }
 
 template <typename T>

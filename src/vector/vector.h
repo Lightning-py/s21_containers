@@ -50,11 +50,11 @@ class vector {
     pointer data() const;
 
     // Методы размера
-    bool empty() const;
-    size_type size() const;
-    size_type max_size() const;
+    [[nodiscard]] bool empty() const;
+    [[nodiscard]] size_type size() const;
+    [[nodiscard]] size_type max_size() const;
     void reserve(size_type size);
-    size_type capacity() const;
+    [[nodiscard]] size_type capacity() const;
     void shrink_to_fit();
 
     iterator begin() { return iterator(data_); }
@@ -68,7 +68,7 @@ class vector {
     void erase(iterator pos);
     void push_back(const_reference value);
     void pop_back();
-    void swap(vector& other);
+    void swap(vector& other) noexcept;
 };
 
 template <typename T>
@@ -81,7 +81,7 @@ class vector<T>::VectorIterator {
     using reference = vector<T>::reference;
 
     VectorIterator() : ptr_(nullptr) {}
-    explicit VectorIterator(pointer ptr) : ptr_(ptr) {}
+    explicit VectorIterator(const pointer ptr) : ptr_(ptr) {}
 
     reference operator*();
     VectorIterator& operator++();
@@ -107,7 +107,7 @@ class vector<T>::VectorConstIterator {
     using pointer = vector<T>::pointer;
     using reference = vector<T>::reference;
 
-    explicit VectorConstIterator(pointer ptr) : ptr_(ptr) {}
+    explicit VectorConstIterator(const pointer ptr) : ptr_(ptr) {}
 
     const_reference operator*() const;
     VectorConstIterator operator++();
