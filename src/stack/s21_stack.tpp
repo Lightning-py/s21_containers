@@ -21,7 +21,7 @@ stack<T, Container>::~stack() {}
 template <class T, class Container>
 stack<T, Container> &stack<T, Container>::operator=(stack &&s) {
   if (this != &s) {
-    container_ = s.container_;
+    container_ = std::move(s.container_);
   }
   return *this;
 }
