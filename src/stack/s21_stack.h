@@ -1,7 +1,6 @@
 #ifndef S21_STACK_H
 #define S21_STACK_H
 
-#include "../linked_list/linked_list.h"
 namespace s21 {
 template <class T, class Container = list<T>>
 class stack {
@@ -18,7 +17,6 @@ class stack {
   stack(stack &&s);
   ~stack();
 
-  // stack &operator=(const stack &s);
   stack &operator=(stack &&s);
 
   const_reference top() const;
@@ -27,7 +25,6 @@ class stack {
   size_type size() const noexcept;
 
   void push(const_reference value);
-  // void push(value_type &&value);
   void pop();
   void swap(stack &s);
 
