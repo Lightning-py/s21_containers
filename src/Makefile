@@ -1,9 +1,8 @@
+.PHONY: test
+
 CC=g++
 
-VECTOR_SOURCES=./vector/vector.h
-LIST_SOURCES=./linked_list/linked_list.h
-
-SOURCES=./vector/ ./linked_list/ ./s21_queue/ ./s21_stack/ ./test/ ./shared/
+SOURCES=./vector/ ./linked_list/ ./queue/ ./stack/ ./test/ ./shared/
 
 TESTS=./test/test.cpp
 
