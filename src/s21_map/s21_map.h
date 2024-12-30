@@ -1,12 +1,6 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include <iostream>
-#include <optional>
-#include <stdexcept>
-#include <stack>
-#include <vector>
-
 namespace s21 {
 
     template<typename Key, typename Value>
