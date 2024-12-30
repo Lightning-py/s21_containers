@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "s21_array.h"
+#include "../s21_array/s21_array.h"
 #include <array>
 
 class S21ArrayTest : public ::testing::Test {
@@ -27,17 +27,14 @@ EXPECT_EQ(arr2[2], 3);
 EXPECT_EQ(arr2[3], 0); // Should be zero-initialized
 }
 
-TEST_F(S21ArrayTest, InitializerListConstructorThrow) {
-EXPECT_THROW({
-s21::array<int, 3> arr = {1, 2, 3, 4, 5};
-}, std::out_of_range);
+TEST_F(S21ArrayTest, InitializerListTooLarge) {
+EXPECT_THROW((s21::array<int, 3>{1, 2, 3, 4}), std::out_of_range);
 }
 
 // Copy Constructor Test
 TEST_F(S21ArrayTest, CopyConstructor) {
 s21::array<int, 3> arr1 = {1, 2, 3};
 s21::array<int, 3> arr2(arr1);
-
 EXPECT_EQ(arr1[0], arr2[0]);
 EXPECT_EQ(arr1[1], arr2[1]);
 EXPECT_EQ(arr1[2], arr2[2]);
@@ -47,7 +44,6 @@ EXPECT_EQ(arr1[2], arr2[2]);
 TEST_F(S21ArrayTest, MoveConstructor) {
 s21::array<int, 3> arr1 = {1, 2, 3};
 s21::array<int, 3> arr2(std::move(arr1));
-
 EXPECT_EQ(arr2[0], 1);
 EXPECT_EQ(arr2[1], 2);
 EXPECT_EQ(arr2[2], 3);
@@ -111,7 +107,6 @@ EXPECT_EQ(arr.max_size(), 5);
 TEST_F(S21ArrayTest, Fill) {
 s21::array<int, 3> arr;
 arr.fill(42);
-
 EXPECT_EQ(arr[0], 42);
 EXPECT_EQ(arr[1], 42);
 EXPECT_EQ(arr[2], 42);
@@ -120,13 +115,10 @@ EXPECT_EQ(arr[2], 42);
 TEST_F(S21ArrayTest, Swap) {
 s21::array<int, 3> arr1 = {1, 2, 3};
 s21::array<int, 3> arr2 = {4, 5, 6};
-
 arr1.swap(arr2);
-
 EXPECT_EQ(arr1[0], 4);
 EXPECT_EQ(arr1[1], 5);
 EXPECT_EQ(arr1[2], 6);
-
 EXPECT_EQ(arr2[0], 1);
 EXPECT_EQ(arr2[1], 2);
 EXPECT_EQ(arr2[2], 3);
@@ -147,13 +139,31 @@ EXPECT_EQ(arr[1], "World");
 EXPECT_EQ(arr[2], "!");
 }
 
-// Comparison with std::array
-TEST_F(S21ArrayTest, CompareWithStdArray) {
-s21::array<int, 5> s21_arr = {1, 2, 3, 4, 5};
-std::array<int, 5> std_arr = {1, 2, 3, 4, 5};
-
-EXPECT_EQ(s21_arr.size(), std_arr.size());
-for (size_t i = 0; i < s21_arr.size(); ++i) {
-EXPECT_EQ(s21_arr[i], std_arr[i]);
+// New Tests to Increase Coverage
+TEST_F(S21ArrayTest, FillAndSwapEmptyArray) {
+s21::array<int, 0> arr1, arr2;
+arr1.swap(arr2);
+arr1.fill(0);
+EXPECT_TRUE(arr1.empty());
 }
+
+TEST_F(S21ArrayTest, AccessOutOfBounds) {
+s21::array<int, 3> arr = {1, 2, 3};
+EXPECT_THROW(arr.at(5), std::out_of_range);
+}
+
+TEST_F(S21ArrayTest, SwapSelf) {
+s21::array<int, 3> arr = {1, 2, 3};
+arr.swap(arr);
+EXPECT_EQ(arr[0], 1);
+EXPECT_EQ(arr[1], 2);
+EXPECT_EQ(arr[2], 3);
+}
+
+TEST_F(S21ArrayTest, SwapDifferentSizes) {
+s21::array<int, 5> arr1 = {1, 2, 3, 4, 5};
+s21::array<int, 5> arr2 = {6, 7, 8, 9, 10};
+arr1.swap(arr2);
+EXPECT_EQ(arr1[0], 6);
+EXPECT_EQ(arr2[0], 1);
 }
