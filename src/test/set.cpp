@@ -1,4 +1,4 @@
-#include "../s21_set/s21_set.h"
+#include "../set/set.h"
 #include <gtest/gtest.h>
 
 TEST(SetTest, InsertElements) {

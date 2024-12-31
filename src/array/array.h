@@ -1,8 +1,6 @@
 #ifndef S21_ARRAY_H
 #define S21_ARRAY_H
 
-#include "../vector/vector.h"
-
 namespace s21 {
 
     template<typename T, size_t N>

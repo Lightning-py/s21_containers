@@ -8,6 +8,9 @@
 #include "queue.cpp"
 #include "stack.cpp"
 #include "vector.cpp"
+#include "array.cpp"
+#include "map.cpp"
+#include "set.cpp"
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);

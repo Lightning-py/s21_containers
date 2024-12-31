@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../s21_map/s21_map.h"
+#include "../map/map.h"
 #include <string>
 
 TEST(MapTest, InsertAndGet) {
