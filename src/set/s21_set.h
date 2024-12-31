@@ -1,7 +1,7 @@
 #ifndef S21_SET_H
 #define S21_SET_H
 
-#include "map/s21_map.h"
+#include "../map/s21_map.h"
 #include <utility>
 
 namespace s21 {

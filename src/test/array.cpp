@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "array/s21_array.h"
+#include "../array/s21_array.h"
 
 class S21ArrayTest : public ::testing::Test {
 protected:
