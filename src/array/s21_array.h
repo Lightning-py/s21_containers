@@ -4,7 +4,7 @@
 namespace s21 {
 
     template<typename T, size_t N>
-    class array {
+    class s21_array {
     public:
 
         using value_type = T;
@@ -19,10 +19,10 @@ namespace s21 {
 
     public:
 
-        array() = default;
+        s21_array() = default;
 
 
-        array(std::initializer_list <value_type> const &items) {
+        s21_array(std::initializer_list <value_type> const &items) {
             if (items.size() > N) {
                 throw std::out_of_range("Array Error: Initializer list too large");
             }
@@ -37,14 +37,14 @@ namespace s21 {
         }
 
 
-        array(const array &other) {
+        s21_array(const s21_array &other) {
             for (size_type i = 0; i < N; ++i) {
                 elements_[i] = other.elements_[i];
             }
         }
 
 
-        array(array &&other)
+        s21_array(s21_array &&other)
 
         noexcept {
             for (size_type i = 0; i < N; ++i) {
@@ -53,7 +53,7 @@ namespace s21 {
         }
 
 
-        array &operator=(array &&other)
+        s21_array &operator=(s21_array &&other)
 
         noexcept {
             if (this != &other) {
@@ -65,7 +65,7 @@ namespace s21 {
         }
 
 
-        ~array() = default;
+        ~s21_array() = default;
 
 
         reference at(size_type pos) {
@@ -122,7 +122,7 @@ namespace s21 {
         }
 
 
-        void swap(array &other)
+        void swap(s21_array &other)
 
         noexcept {
             for (size_type i = 0; i < N; ++i) {
