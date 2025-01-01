@@ -127,8 +127,8 @@ class vector<T>::VectorConstIterator {
 
 }  // namespace s21
 
-#include "./vector.tpp"
-#include "./vector_const_iterator.tpp"
-#include "./vector_iterator.tpp"
+#include "./s21_vector.tpp"
+#include "./s21_vector_const_iterator.tpp"
+#include "./s21_vector_iterator.tpp"
 
 #endif  // VECTOR_H

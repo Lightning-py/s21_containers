@@ -3,7 +3,8 @@
 //
 
 #pragma once
-#include "linked_list.h"
+#include "s21_list.h"
+
 namespace s21 {
 template <typename T>
 typename list<T>::const_reference list<T>::ListConstIterator::operator*()

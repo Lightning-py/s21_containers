@@ -136,8 +136,8 @@ class list<T>::ListConstIterator {
 
 }  // namespace s21
 
-#include "linked_list.tpp"
-#include "linked_list_const_iterator.tpp"
-#include "linked_list_iterator.tpp"
+#include "s21_list.tpp"
+#include "s21_list_const_iterator.tpp"
+#include "s21_list_iterator.tpp"
 
 #endif  // LINKED_LIST_H
