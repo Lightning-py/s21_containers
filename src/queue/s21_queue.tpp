@@ -21,48 +21,48 @@ queue<T, Container>::~queue() {}
 
 template <class T, class Container>
 queue<T, Container>& queue<T, Container>::operator=(queue&& q) {
-  if (this != &q) {
-    container_ = std::move(q.container_);
-  }
-  return *this;
+    if (this != &q) {
+        container_ = std::move(q.container_);
+    }
+    return *this;
 }
 
 template <class T, class Container>
 typename queue<T, Container>::const_reference queue<T, Container>::front()
     const noexcept {
-  return container_.front();
+    return container_.front();
 }
 
 template <class T, class Container>
 typename queue<T, Container>::const_reference queue<T, Container>::back()
     const noexcept {
-  return container_.back();
+    return container_.back();
 }
 
 template <class T, class Container>
 bool queue<T, Container>::empty() const noexcept {
-  return container_.empty();
+    return container_.empty();
 }
 
 template <class T, class Container>
 typename queue<T, Container>::size_type queue<T, Container>::size()
     const noexcept {
-  return container_.size();
+    return container_.size();
 }
 
 template <class T, class Container>
 void queue<T, Container>::push(const_reference value) {
-  container_.push_back(value);
+    container_.push_back(value);
 }
 
 template <class T, class Container>
 void queue<T, Container>::pop() {
-  container_.pop_front();
+    container_.pop_front();
 }
 
 template <class T, class Container>
 void queue<T, Container>::swap(queue& q) {
-  container_.swap(q.container_);
+    container_.swap(q.container_);
 }
 
 };  // namespace s21

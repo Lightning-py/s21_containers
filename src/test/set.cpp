@@ -1,8 +1,9 @@
-#include "../set/s21_set.h"
 #include <gtest/gtest.h>
 
+#include "../set/s21_set.h"
+
 TEST(SetTest, InsertElements) {
-    s21::Set<int> mySet;
+    s21::set<int> mySet;
 
     mySet.insert(5);
     EXPECT_TRUE(mySet.contains(5));
@@ -17,7 +18,7 @@ TEST(SetTest, InsertElements) {
 }
 
 TEST(SetTest, RemoveElements) {
-    s21::Set<int> mySet;
+    s21::set<int> mySet;
 
     mySet.insert(5);
     mySet.insert(10);
@@ -31,7 +32,7 @@ TEST(SetTest, RemoveElements) {
 }
 
 TEST(SetTest, ContainsElement) {
-    s21::Set<int> mySet;
+    s21::set<int> mySet;
 
     mySet.insert(42);
     EXPECT_TRUE(mySet.contains(42));
@@ -41,7 +42,7 @@ TEST(SetTest, ContainsElement) {
 }
 
 TEST(SetTest, ClearSet) {
-    s21::Set<int> mySet;
+    s21::set<int> mySet;
 
     mySet.insert(1);
     mySet.insert(2);
@@ -53,7 +54,7 @@ TEST(SetTest, ClearSet) {
 }
 
 TEST(SetTest, Iterators) {
-    s21::Set<int> mySet;
+    s21::set<int> mySet;
 
     mySet.insert(3);
     mySet.insert(1);
@@ -68,8 +69,8 @@ TEST(SetTest, Iterators) {
 }
 
 TEST(SetTest, EqualityCheck) {
-    s21::Set<int> set1;
-    s21::Set<int> set2;
+    s21::set<int> set1;
+    s21::set<int> set2;
 
     set1.insert(1);
     set1.insert(2);

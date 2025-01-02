@@ -4,33 +4,33 @@
 namespace s21 {
 template <class T, class Container = list<T>>
 class queue {
- public:
-  using value_type = T;
-  using reference = T &;
-  using const_reference = const T &;
-  using size_type = size_t;
+   public:
+    using value_type = T;
+    using reference = T &;
+    using const_reference = const T &;
+    using size_type = size_t;
 
- public:
-  queue();
-  queue(std::initializer_list<value_type> const &items);
-  queue(const queue &q);
-  queue(queue &&q);
-  ~queue();
+   public:
+    queue();
+    queue(std::initializer_list<value_type> const &items);
+    queue(const queue &q);
+    queue(queue &&q);
+    ~queue();
 
-  queue &operator=(queue &&q);
+    queue &operator=(queue &&q);
 
-  const_reference front() const noexcept;
-  const_reference back() const noexcept;
+    const_reference front() const noexcept;
+    const_reference back() const noexcept;
 
-  bool empty() const noexcept;
-  size_type size() const noexcept;
+    bool empty() const noexcept;
+    size_type size() const noexcept;
 
-  void push(const_reference value);
-  void pop();
-  void swap(queue &q);
+    void push(const_reference value);
+    void pop();
+    void swap(queue &q);
 
- private:
-  Container container_;
+   private:
+    Container container_;
 };
 
 }  // namespace s21

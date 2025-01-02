@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 
-#include "../s21_containers.h"
-
 #include <string>
 
+#include "../s21_containers.h"
+
 TEST(MapTest, InsertAndGet) {
-    s21::Map<int, std::string> map;
+    s21::map<int, std::string> map;
     map.insert({1, "one"});
     map.insert({2, "two"});
     map.insert({3, "three"});
@@ -17,7 +17,7 @@ TEST(MapTest, InsertAndGet) {
 }
 
 TEST(MapTest, ContainsKey) {
-    s21::Map<int, std::string> map;
+    s21::map<int, std::string> map;
     map.insert({1, "one"});
     map.insert({2, "two"});
 
@@ -27,7 +27,7 @@ TEST(MapTest, ContainsKey) {
 }
 
 TEST(MapTest, SizeAndEmpty) {
-    s21::Map<int, std::string> map;
+    s21::map<int, std::string> map;
     EXPECT_EQ(map.size(), 0);
     EXPECT_TRUE(map.empty());
 
@@ -40,7 +40,7 @@ TEST(MapTest, SizeAndEmpty) {
 }
 
 TEST(MapTest, RemoveKey) {
-    s21::Map<int, std::string> map;
+    s21::map<int, std::string> map;
     map.insert({1, "one"});
     map.insert({2, "two"});
     map.insert({3, "three"});
@@ -57,7 +57,7 @@ TEST(MapTest, RemoveKey) {
 }
 
 TEST(MapTest, ClearMap) {
-    s21::Map<int, std::string> map;
+    s21::map<int, std::string> map;
     map.insert({1, "one"});
     map.insert({2, "two"});
     map.insert({3, "three"});
@@ -69,7 +69,7 @@ TEST(MapTest, ClearMap) {
 }
 
 TEST(MapTest, OperatorAccess) {
-    s21::Map<int, std::string> map;
+    s21::map<int, std::string> map;
     map[1] = "one";
     map[2] = "two";
 
@@ -86,7 +86,7 @@ TEST(MapTest, OperatorAccess) {
 }
 
 TEST(MapTest, GetOrDefault) {
-    s21::Map<int, std::string> map;
+    s21::map<int, std::string> map;
     map.insert({1, "one"});
 
     EXPECT_EQ(map.getOrDefault(1, "default"), "one");
@@ -94,8 +94,8 @@ TEST(MapTest, GetOrDefault) {
 }
 
 TEST(MapTest, SwapMaps) {
-    s21::Map<int, std::string> map1;
-    s21::Map<int, std::string> map2;
+    s21::map<int, std::string> map1;
+    s21::map<int, std::string> map2;
 
     map1.insert({1, "one"});
     map1.insert({2, "two"});
@@ -117,7 +117,7 @@ TEST(MapTest, SwapMaps) {
 }
 
 TEST(MapTest, Iterators) {
-    s21::Map<int, std::string> map;
+    s21::map<int, std::string> map;
     map.insert({2, "two"});
     map.insert({1, "one"});
     map.insert({3, "three"});
