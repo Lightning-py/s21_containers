@@ -1,17 +1,19 @@
 .PHONY: test
 
-CC=g++
+CC=g++ -std=c++17
 
-SOURCES=./vector/ ./linked_list/ ./queue/ ./stack/ ./test/ ./shared/
+SOURCES=./array/* ./linked_list/* ./map/* ./queue/* ./set/* ./shared/* ./stack/* ./vector/*
 
 TESTS=./test/test.cpp
+
+FILES= $(SOURCES) ./test/*
 
 CFLAGS= -o test -Wall -Wextra
 LDFLAGS=-lpthread -lgtest --coverage
 VALGRIND_FLAGS=--leak-check=full
 
 
-test: $(SOURCES)
+test: $(FILES)
 	mkdir -p build
 	$(CC) $(TESTS) -o ./build/test_ $(LDFLAGS)
 	./build/test_
@@ -23,3 +25,12 @@ gcov_report: test
 
 memcheck: test
 	valgrind $(VALGRIND_FLAGS) -- ./build/test_
+
+format:
+	clang-format -i $(FILES)
+
+clang-check:
+	clang-format -n $(FILES)
+
+clean:
+	rm -rf build/*
