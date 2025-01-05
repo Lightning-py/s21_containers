@@ -4,6 +4,8 @@
 
 #include <gtest/gtest.h>
 
+#ifdef INCLUDE
+
 #include "array.cpp"
 #include "list.cpp"
 #include "map.cpp"
@@ -11,6 +13,8 @@
 #include "set.cpp"
 #include "stack.cpp"
 #include "vector.cpp"
+
+#endif
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

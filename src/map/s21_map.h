@@ -210,6 +210,13 @@ class map {
     Iterator begin() { return Iterator(root); }
 
     Iterator end() { return Iterator(nullptr); }
+
+    Iterator insertGet(Key key, Value value) {
+        (*this)[key] = value;
+        return Iterator(find_(root, key));
+    }
+
+    Iterator find(const Key& key) const { return Iterator(find_(root, key)); }
 };
 
 }  // namespace s21

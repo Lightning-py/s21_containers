@@ -2,6 +2,7 @@
 #define SHARED
 
 #include <initializer_list>
+#include <iterator>
 
 namespace s21 {
 
