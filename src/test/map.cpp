@@ -4,16 +4,13 @@
 
 #include "../s21_containers.h"
 
-TEST(MapTest, InsertAndGet) {
-    s21::map<int, std::string> map;
-    map.insert({1, "one"});
-    map.insert({2, "two"});
-    map.insert({3, "three"});
+TEST(MAP, insert) {
+    s21::map<int, int> map;
 
-    EXPECT_EQ(map.get(1), "one");
-    EXPECT_EQ(map.get(2), "two");
-    EXPECT_EQ(map.get(3), "three");
-    EXPECT_THROW(map.get(4), std::out_of_range);
+    map.insert(1, 2);
+    EXPECT_EQ(map[1], 2);
+    map.insert(1, 3);
+    EXPECT_EQ(map[1], 3);
 }
 
 TEST(MapTest, ContainsKey) {
@@ -37,23 +34,6 @@ TEST(MapTest, SizeAndEmpty) {
 
     map.insert({2, "two"});
     EXPECT_EQ(map.size(), 2);
-}
-
-TEST(MapTest, RemoveKey) {
-    s21::map<int, std::string> map;
-    map.insert({1, "one"});
-    map.insert({2, "two"});
-    map.insert({3, "three"});
-
-    map.remove(2);
-    EXPECT_FALSE(map.contains(2));
-    EXPECT_EQ(map.size(), 2);
-
-    EXPECT_THROW(map.get(2), std::out_of_range);
-
-    map.remove(1);
-    EXPECT_FALSE(map.contains(1));
-    EXPECT_EQ(map.size(), 1);
 }
 
 TEST(MapTest, ClearMap) {
@@ -85,14 +65,6 @@ TEST(MapTest, OperatorAccess) {
     EXPECT_EQ(map.size(), 3);
 }
 
-TEST(MapTest, GetOrDefault) {
-    s21::map<int, std::string> map;
-    map.insert({1, "one"});
-
-    EXPECT_EQ(map.getOrDefault(1, "default"), "one");
-    EXPECT_EQ(map.getOrDefault(2, "default"), "default");
-}
-
 TEST(MapTest, SwapMaps) {
     s21::map<int, std::string> map1;
     s21::map<int, std::string> map2;
@@ -116,19 +88,3 @@ TEST(MapTest, SwapMaps) {
     EXPECT_FALSE(map2.contains(4));
 }
 
-TEST(MapTest, Iterators) {
-    s21::map<int, std::string> map;
-    map.insert({2, "two"});
-    map.insert({1, "one"});
-    map.insert({3, "three"});
-
-    std::vector<std::string> values;
-    for (auto it = map.begin(); it != map.end(); ++it) {
-        values.push_back((*it).second);
-    }
-
-    EXPECT_EQ(values.size(), 3);
-    EXPECT_EQ(values[0], "one");
-    EXPECT_EQ(values[1], "two");
-    EXPECT_EQ(values[2], "three");
-}

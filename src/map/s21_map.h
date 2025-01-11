@@ -1,222 +1,176 @@
 #ifndef MAP_H
 #define MAP_H
-
-#include <iostream>
+#include "../binary_tree/binary_tree.h"
 
 namespace s21 {
 
 template <typename Key, typename Value>
-struct TreeNode {
-    Key key;
-    Value value;
-    TreeNode* left = nullptr;
-    TreeNode* right = nullptr;
-    TreeNode* parent = nullptr;
+class map {
+   public:
+    class Iterator;
 
-    TreeNode(Key k, Value v) : key(k), value(v) {}
+    using key_type = Key;
+    using mapped_type = Value;
+    using value_type = std::pair<const key_type, mapped_type>;
+    using reference = value_type&;
+    using const_reference = const value_type&;
+    using iterator = Iterator;
+    using size_type = size_t;
+
+    // Constructors
+
+    map() = default;
+    map(std::initializer_list<value_type> const& items) {
+        for (auto const& item : items) {
+            insert(item);
+        }
+    }
+
+    map(const map& m) {
+        for (Iterator it = m.begin(); it != m.end(); ++it) {
+            insert(*it);
+        }
+    }
+
+    map(map&& m) noexcept { std::swap(m.tree, tree); }
+    ~map() = default;
+    map& operator=(map&& m) noexcept {
+        std::swap(tree, m.tree);
+        return *this;
+    }
+
+    // Map element access
+
+    mapped_type& at(const key_type& key) {
+        auto it = find(key);
+
+        if (it == tree.end()) {
+            throw std::out_of_range("key not found");
+        }
+
+        return it->second;
+    }
+
+    mapped_type& operator[](const key_type& key) {
+        auto node = tree.get(key);
+
+        if (node == tree.end()) {
+            tree.insert(key, mapped_type());
+            node = tree.get(key);
+        }
+
+        return (*node)->value;
+    }
+
+    // Map iterators
+
+    Iterator begin() { return Iterator(tree.begin()); }
+    Iterator end() { return Iterator(tree.end()); }
+
+    // Map Capacity
+
+    [[nodiscard]] bool empty() const { return tree.size() == 0; }
+    [[nodiscard]] size_type size() const { return tree.size(); }
+    [[nodiscard]] static size_type max_size() {
+        return std::numeric_limits<size_type>::max();
+    }
+
+    // Map Modifiers
+
+    void clear() { tree.clear(); }
+    std::pair<iterator, bool> insert(const value_type& value) {
+        return insert(value.first, value.second);
+    }
+
+    std::pair<iterator, bool> insert(const key_type& key,
+                                     const mapped_type& value) {
+        auto node = tree.get(key);
+
+        if (node != tree.end() && (*node)->value == value) {
+            return std::make_pair(iterator(node), false);
+        }
+
+        tree.insert(key, value);
+        node = tree.get(key);
+        return std::make_pair(iterator(node), true);
+    }
+
+    std::pair<iterator, bool> insert_or_assign(const key_type& key,
+                                               const mapped_type& value) {
+        return insert(key, value);
+    }
+
+    void erase(iterator pos) { tree.remove((*pos).first); }
+    void erase(key_type key) { tree.erase(key); }
+    void swap(map& other) noexcept { tree.swap(other.tree); }
+    void merge(map& other) {
+        for (auto it = other.begin(); it != other.end(); ++it) {
+            insert(*it);
+        }
+
+        other.clear();
+    }
+
+    bool contains(const key_type& key) const {
+        return tree.get(key) != tree.end();
+    }
+
+   private:
+    BinaryTree<key_type, mapped_type> tree;
 };
 
 template <typename Key, typename Value>
-class map {
-   private:
-    TreeNode<Key, Value>* root = nullptr;
-    size_t treeSize = 0;
-
-    TreeNode<Key, Value>* insert_(TreeNode<Key, Value>* node, const Key& key,
-                                  Value value,
-                                  TreeNode<Key, Value>* parent = nullptr) {
-        if (!node) {
-            ++treeSize;
-            TreeNode<Key, Value>* newNode =
-                new TreeNode<Key, Value>(key, value);
-            newNode->parent = parent;
-            return newNode;
-        }
-        if (key < node->key) {
-            node->left = insert_(node->left, key, value, node);
-        } else if (key > node->key) {
-            node->right = insert_(node->right, key, value, node);
-        }
-        return node;
-    }
-
-    TreeNode<Key, Value>* findMin_(TreeNode<Key, Value>* node) {
-        while (node && node->left) {
-            node = node->left;
-        }
-        return node;
-    }
-
-    TreeNode<Key, Value>* find_(TreeNode<Key, Value>* node,
-                                const Key& key) const {
-        if (!node) return nullptr;
-        if (key < node->key) return find_(node->left, key);
-        if (key > node->key) return find_(node->right, key);
-        return node;
-    }
-
-    TreeNode<Key, Value>* remove_(TreeNode<Key, Value>* node, const Key& key) {
-        if (!node) return nullptr;
-
-        if (key < node->key) {
-            node->left = remove_(node->left, key);
-        } else if (key > node->key) {
-            node->right = remove_(node->right, key);
-        } else {
-            if (!node->left) {
-                TreeNode<Key, Value>* right = node->right;
-                delete node;
-                --treeSize;
-                return right;
-            } else if (!node->right) {
-                TreeNode<Key, Value>* left = node->left;
-                delete node;
-                --treeSize;
-                return left;
-            }
-            TreeNode<Key, Value>* successor = findMin_(node->right);
-            node->key = successor->key;
-            node->value = successor->value;
-            node->right = remove_(node->right, successor->key);
-        }
-        return node;
-    }
-
-    std::optional<Value> get_(TreeNode<Key, Value>* node,
-                              const Key& key) const {
-        if (!node) return std::nullopt;
-        if (key < node->key) return get_(node->left, key);
-        if (key > node->key) return get_(node->right, key);
-        return node->value;
-    }
-
-    void clear_(TreeNode<Key, Value>* node) {
-        if (node) {
-            clear_(node->left);
-            clear_(node->right);
-            delete node;
-        }
-    }
-
+class map<Key, Value>::Iterator {
    public:
-    map() = default;
+    using iterator_category = std::random_access_iterator_tag;
+    using value_type = map<Key, Value>::value_type;
+    using difference_type = std::ptrdiff_t;
+    using pointer = TreeNode<Key, Value>*;
+    using reference = TreeNode<Key, Value>&;
 
-    ~map() { clear_(root); }
+    Iterator() : iterator() {}
 
-    Value& operator[](const Key& key) {
-        TreeNode<Key, Value>* node = find_(root, key);
-        if (node) {
-            return node->value;
-        }
+    explicit Iterator(const TreeNode<Key, Value>* ptr)
+        : iterator(BinaryTree<Key, Value>::Iterator(ptr)) {}
+    explicit Iterator(typename BinaryTree<Key, Value>::Iterator itr)
+        : iterator(itr) {}
 
-        root = insert_(root, key, Value());
-        node = find_(root, key);
-        return node->value;
-    }
-
-    void insert(const std::pair<Key, Value> pair) {
-        root = insert_(root, pair.first, pair.second);
-    }
-
-    void remove(const Key& key) { root = remove_(root, key); }
-
-    Value& get(const Key& key) {
-        TreeNode<Key, Value>* node = find_(root, key);
-        if (!node) {
-            throw std::out_of_range("Key not found");
-        }
-        return node->value;
-    }
-
-    const Value& get(const Key& key) const {
-        TreeNode<Key, Value>* node = find_(root, key);
-        if (!node) {
-            throw std::out_of_range("Key not found");
-        }
-        return node->value;
-    }
-
-    size_t size() const { return treeSize; }
-
-    bool empty() const { return treeSize == 0; }
-
-    bool contains(const Key& key) const { return find_(root, key) != nullptr; }
-
-    void clear() {
-        clear_(root);
-        root = nullptr;
-        treeSize = 0;
-    }
-
-    void swap(map& other) {
-        std::swap(root, other.root);
-        std::swap(treeSize, other.treeSize);
-    }
-
-    Value getOrDefault(const Key& key, const Value& defaultValue) const {
-        auto result = get_(root, key);
-        return result ? *result : defaultValue;
-    }
-
-    class Iterator {
-       private:
-        TreeNode<Key, Value>* current;
-
-        TreeNode<Key, Value>* findNext(TreeNode<Key, Value>* node) {
-            if (node->right) {
-                node = node->right;
-                while (node->left) {
-                    node = node->left;
-                }
-            } else {
-                while (node->parent && node == node->parent->right) {
-                    node = node->parent;
-                }
-                node = node->parent;
-            }
-            return node;
-        }
-
-       public:
-        explicit Iterator(TreeNode<Key, Value>* start = nullptr)
-            : current(start) {
-            if (current) {
-                while (current->left) {
-                    current = current->left;
-                }
-            }
-        }
-
-        std::pair<const Key&, Value&> operator*() const {
-            return {current->key, current->value};
-        }
-
-        Iterator& operator++() {
-            if (current) {
-                current = findNext(current);
-            }
-            return *this;
-        }
-
-        bool operator==(const Iterator& other) const {
-            return current == other.current;
-        }
-
-        bool operator!=(const Iterator& other) const {
-            return current != other.current;
-        }
+    reference operator*() const {
+        return std::make_pair((*iterator)->key, (*iterator)->value);
     };
 
-    Iterator begin() { return Iterator(root); }
-
-    Iterator end() { return Iterator(nullptr); }
-
-    Iterator insertGet(Key key, Value value) {
-        (*this)[key] = value;
-        return Iterator(find_(root, key));
+    Iterator& operator++() {
+        ++iterator;
+        return *this;
     }
 
-    Iterator find(const Key& key) const { return Iterator(find_(root, key)); }
+    Iterator& operator--() {
+        --iterator;
+        return *this;
+    }
+
+    Iterator operator++(int) {
+        Iterator tmp = *this;
+        ++iterator;
+        return tmp;
+    }
+
+    Iterator operator--(int) {
+        Iterator tmp = *this;
+        --iterator;
+        return tmp;
+    }
+
+    bool operator==(const Iterator& other) const {
+        return iterator == other.iterator;
+    }
+
+    bool operator!=(const Iterator& other) const {
+        return !(iterator == other.iterator);
+    }
+
+   private:
+    typename BinaryTree<Key, Value>::Iterator iterator;
 };
 
 }  // namespace s21

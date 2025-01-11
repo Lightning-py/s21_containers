@@ -18,7 +18,7 @@ class set {
 
     void insert(const Key& key) { map_.insert({key, std::monostate()}); }
 
-    void remove(const Key& key) { map_.remove(key); }
+    void remove(const Key key) { map_.erase(key); }
 
     bool contains(const Key& key) const { return map_.contains(key); }
 

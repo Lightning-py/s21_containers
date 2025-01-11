@@ -63,16 +63,18 @@ class multiset {
         if (map_.contains(value)) how_many = map_.get(value);
         how_many++;
 
-        return iterator(map_.insertGet(value, how_many), how_many);
+        return iterator(map_.insert(value, how_many).first, how_many);
     }
 
     iterator insert(value_type value) {
         size_type how_many = 0;
 
-        if (map_.contains(value)) how_many = map_.get(value);
+        if (map_.contains(value)) {
+            how_many = map_[value];
+        }
         how_many++;
 
-        return iterator(map_.insertGet(value, how_many), how_many);
+        return iterator(map_.insert(value, how_many).first, how_many);
     }
 
     void erase(iterator pos) {
@@ -126,7 +128,7 @@ class multiset<T>::Iterator {
         index_ = 1;
     }
 
-    Iterator(typename map<T, size_type>::Iterator it, size_type index) {
+    Iterator(typename map<T, size_type>::Iterator it, const size_type index) {
         it_ = it;
         index_ = index;
     }
