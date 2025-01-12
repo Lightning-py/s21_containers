@@ -72,7 +72,7 @@ class BinaryTree {
                 --treeSize;
                 return left;
             }
-            TreeNode<Key, Value>* successor = findMin_(node->right);
+            TreeNode<Key, Value>* successor = findMin(node->right);
             node->key = successor->key;
             node->value = successor->value;
             node->right = remove_(node->right, successor->key);
@@ -98,12 +98,16 @@ class BinaryTree {
 
    public:
     class Iterator;
+    class ConstIterator;
 
     BinaryTree() = default;
     ~BinaryTree() { clear_(root); }
 
-    Iterator begin() const { return Iterator(findMin(root)); }
+    Iterator begin() { return Iterator(findMin(root)); }
     Iterator end() const { return Iterator(nullptr); }
+
+    ConstIterator cbegin() const { return ConstIterator(findMin(root)); }
+    ConstIterator cend() const { return ConstIterator(nullptr); }
 
     Iterator insert(const Key& key, const Value& value) {
         root = insert_(root, key, value, nullptr);
@@ -118,11 +122,11 @@ class BinaryTree {
         treeSize = 0;
     }
     [[nodiscard]] size_t size() const { return treeSize; }
-    BinaryTree(const BinaryTree<Key, Value>& other) {
-        for (auto it = other.begin(); it != other.end(); ++it) {
-            insert((*it)->key, (*it)->value);
-        }
-    }
+    // BinaryTree(const BinaryTree<Key, Value>& other) {
+    //     for (auto it = other.cbegin(); it != other.cend(); ++it) {
+    //         insert((*it)->key, (*it)->value);
+    //     }
+    // }
 
     BinaryTree& operator=(const BinaryTree<Key, Value>& other) {
         if (this == &other) return *this;
@@ -185,7 +189,62 @@ class BinaryTree<Key, Value>::Iterator {
     bool operator==(const Iterator& other) const { return node == other.node; }
     bool operator!=(const Iterator& other) const { return node != other.node; }
 
-    TreeNode<Key, Value>* operator*() { return node; }
+    TreeNode<Key, Value>* operator*() const { return node; }
+};
+
+template <typename Key, typename Value>
+class BinaryTree<Key, Value>::ConstIterator {
+   private:
+    const TreeNode<Key, Value>* node;
+
+   public:
+    ConstIterator() : node(nullptr) {}
+    explicit ConstIterator(const TreeNode<Key, Value>* node) : node(node) {}
+
+    ConstIterator& operator++() {
+        if (node->right) {
+            node = node->right;
+            while (node->left) {
+                node = node->left;
+            }
+        } else {
+            while (node->parent &&
+                   (node->parent ? node == node->parent->right : false)) {
+                node = node->parent;
+            }
+            node = node->parent;
+        }
+
+        return *this;
+    }
+
+    ConstIterator& operator--() {
+        if (node->left) {
+            node = node->left;
+            while (node->right) {
+                node = node->right;
+            }
+        } else {
+            while (node->parent &&
+                   (node->parent ? node == node->parent->left : false)) {
+                node = node->parent;
+            }
+            node = node->parent;
+        }
+
+        return *this;
+    }
+
+    bool operator==(const ConstIterator& other) const {
+        return node == other.node;
+    }
+    bool operator!=(const ConstIterator& other) const {
+        return node != other.node;
+    }
+
+    std::pair<Key, Value> operator*() const {
+        return std::make_pair(node->key, node->value);
+    }
 };
 
 }  // namespace s21

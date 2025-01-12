@@ -8,6 +8,7 @@ template <typename Key, typename Value>
 class map {
    public:
     class Iterator;
+    class ConstIterator;
 
     using key_type = Key;
     using mapped_type = Value;
@@ -15,6 +16,7 @@ class map {
     using reference = value_type&;
     using const_reference = const value_type&;
     using iterator = Iterator;
+    using const_iterator = ConstIterator;
     using size_type = size_t;
 
     // Constructors
@@ -27,12 +29,12 @@ class map {
     }
 
     map(const map& m) {
-        for (Iterator it = m.begin(); it != m.end(); ++it) {
-            insert(*it);
+        for (ConstIterator it = m.cbegin(); it != m.cend(); ++it) {
+            insert((*it).first, (*it).second);
         }
     }
 
-    map(map&& m) noexcept { std::swap(m.tree, tree); }
+    map(map&& m) noexcept { tree.swap(m.tree); }
     ~map() = default;
     map& operator=(map&& m) noexcept {
         std::swap(tree, m.tree);
@@ -42,13 +44,13 @@ class map {
     // Map element access
 
     mapped_type& at(const key_type& key) {
-        auto it = find(key);
+        auto it = tree.get(key);
 
         if (it == tree.end()) {
             throw std::out_of_range("key not found");
         }
 
-        return it->second;
+        return (*it)->value;
     }
 
     mapped_type& operator[](const key_type& key) {
@@ -64,8 +66,11 @@ class map {
 
     // Map iterators
 
-    Iterator begin() { return Iterator(tree.begin()); }
-    Iterator end() { return Iterator(tree.end()); }
+    iterator begin() { return Iterator(tree.begin()); }
+    iterator end() { return Iterator(tree.end()); }
+
+    const_iterator cbegin() const { return const_iterator(tree.cbegin()); }
+    const_iterator cend() const { return const_iterator(tree.cend()); }
 
     // Map Capacity
 
@@ -101,7 +106,7 @@ class map {
     }
 
     void erase(iterator pos) { tree.remove((*pos).first); }
-    void erase(key_type key) { tree.erase(key); }
+    void erase(key_type key) { tree.remove(key); }
     void swap(map& other) noexcept { tree.swap(other.tree); }
     void merge(map& other) {
         for (auto it = other.begin(); it != other.end(); ++it) {
@@ -135,7 +140,7 @@ class map<Key, Value>::Iterator {
     explicit Iterator(typename BinaryTree<Key, Value>::Iterator itr)
         : iterator(itr) {}
 
-    reference operator*() const {
+    value_type operator*() const {
         return std::make_pair((*iterator)->key, (*iterator)->value);
     };
 
@@ -169,8 +174,60 @@ class map<Key, Value>::Iterator {
         return !(iterator == other.iterator);
     }
 
-   private:
+   protected:
     typename BinaryTree<Key, Value>::Iterator iterator;
+};
+
+template <typename Key, typename Value>
+class map<Key, Value>::ConstIterator {
+   public:
+    using iterator_category = std::random_access_iterator_tag;
+    using value_type = map<Key, Value>::value_type;
+    using difference_type = std::ptrdiff_t;
+    using pointer = TreeNode<Key, Value>*;
+    using reference = TreeNode<Key, Value>&;
+
+    ConstIterator() : iterator() {}
+
+    explicit ConstIterator(const TreeNode<Key, Value>* ptr)
+        : iterator(BinaryTree<Key, Value>::Iterator(ptr)) {}
+    explicit ConstIterator(typename BinaryTree<Key, Value>::ConstIterator itr)
+        : iterator(itr) {}
+
+    value_type operator*() const { return *iterator; };
+
+    ConstIterator& operator++() {
+        ++iterator;
+        return *this;
+    }
+
+    ConstIterator& operator--() {
+        --iterator;
+        return *this;
+    }
+
+    ConstIterator operator++(int) {
+        ConstIterator tmp = *this;
+        ++iterator;
+        return tmp;
+    }
+
+    ConstIterator operator--(int) {
+        ConstIterator tmp = *this;
+        --iterator;
+        return tmp;
+    }
+
+    bool operator==(const ConstIterator& other) const {
+        return iterator == other.iterator;
+    }
+
+    bool operator!=(const ConstIterator& other) const {
+        return !(iterator == other.iterator);
+    }
+
+   protected:
+    typename BinaryTree<Key, Value>::ConstIterator iterator;
 };
 
 }  // namespace s21

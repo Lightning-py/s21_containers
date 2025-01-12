@@ -4,87 +4,147 @@
 
 #include "../s21_containers.h"
 
-TEST(MAP, insert) {
+TEST(MAP, Default_constructor) {
     s21::map<int, int> map;
 
-    map.insert(1, 2);
+    EXPECT_EQ(map.size(), 0);
+}
+
+TEST(MAP, Initializer_list_Constructor) {
+    s21::map<int, int> map = {std::make_pair(1, 2), std::make_pair(3, 4)};
+
+    EXPECT_EQ(map.size(), 2);
     EXPECT_EQ(map[1], 2);
-    map.insert(1, 3);
+    EXPECT_EQ(map[3], 4);
+}
+
+TEST(MAP, Copy_constructor) {
+    s21::map<int, int> map;
+    map[1] = 2;
+    map[3] = 4;
+
+    s21::map<int, int> copy(map);
+
+    EXPECT_EQ(copy.size(), 2);
+    EXPECT_EQ(copy[1], 2);
+    EXPECT_EQ(copy[3], 4);
+}
+
+TEST(MAP, Move_constructor) {
+    s21::map<int, int> map = {std::make_pair(1, 2), std::make_pair(3, 4)};
+    s21::map<int, int> copy(std::move(map));
+}
+
+TEST(MAP, Operator_equal) {
+    const s21::map<int, int> map = {std::make_pair(1, 2), std::make_pair(3, 4)};
+    s21::map<int, int> map2 = map;
+
+    EXPECT_EQ(map2.size(), 2);
+    EXPECT_EQ(map2[1], 2);
+    EXPECT_EQ(map2[3], 4);
+}
+
+TEST(MAP, At_normal) {
+    s21::map<int, int> map = {std::make_pair(1, 2), std::make_pair(3, 4)};
+
+    EXPECT_EQ(map.at(1), 2);
+    EXPECT_EQ(map.at(3), 4);
+}
+
+TEST(MAP, At_invalid) {
+    s21::map<int, int> map = {std::make_pair(1, 2), std::make_pair(3, 4)};
+
+    EXPECT_THROW(map.at(10), std::out_of_range);
+}
+
+TEST(MAP, Operator_square_brackets) {
+    s21::map<int, int> map;
+
+    map[1] = 2;
+    EXPECT_EQ(map[1], 2);
+    map[1] = 3;
     EXPECT_EQ(map[1], 3);
 }
 
-TEST(MapTest, ContainsKey) {
-    s21::map<int, std::string> map;
-    map.insert({1, "one"});
-    map.insert({2, "two"});
+TEST(MAP, Empty) {
+    s21::map<int, int> map;
 
-    EXPECT_TRUE(map.contains(1));
-    EXPECT_TRUE(map.contains(2));
-    EXPECT_FALSE(map.contains(3));
+    EXPECT_EQ(map.empty(), true);
 }
 
-TEST(MapTest, SizeAndEmpty) {
-    s21::map<int, std::string> map;
-    EXPECT_EQ(map.size(), 0);
-    EXPECT_TRUE(map.empty());
+TEST(MAP, Size) {
+    s21::map<int, int> map;
 
-    map.insert({1, "one"});
+    EXPECT_EQ(map.size(), 0);
+    map[1] = 2;
     EXPECT_EQ(map.size(), 1);
-    EXPECT_FALSE(map.empty());
-
-    map.insert({2, "two"});
-    EXPECT_EQ(map.size(), 2);
 }
 
-TEST(MapTest, ClearMap) {
-    s21::map<int, std::string> map;
-    map.insert({1, "one"});
-    map.insert({2, "two"});
-    map.insert({3, "three"});
+TEST(MAP, Max_size) {
+    s21::map<int, int> map;
+    EXPECT_EQ(map.max_size(), std::numeric_limits<size_t>::max());
+}
 
+TEST(MAP, Clear) {
+    s21::map<int, int> map;
+
+    map[1] = 2;
+    EXPECT_EQ(map.size(), 1);
     map.clear();
-    EXPECT_TRUE(map.empty());
     EXPECT_EQ(map.size(), 0);
-    EXPECT_FALSE(map.contains(1));
+    EXPECT_TRUE(map.empty());
 }
 
-TEST(MapTest, OperatorAccess) {
-    s21::map<int, std::string> map;
-    map[1] = "one";
-    map[2] = "two";
-
-    EXPECT_EQ(map[1], "one");
-    EXPECT_EQ(map[2], "two");
-
-    // Изменение значения
-    map[1] = "uno";
-    EXPECT_EQ(map[1], "uno");
-
-    // Доступ к отсутствующему ключу
-    EXPECT_EQ(map[3], "");
-    EXPECT_EQ(map.size(), 3);
+TEST(MAP, Insert) {
+    s21::map<int, int> map;
+    map.insert(std::make_pair(1, 2));
+    EXPECT_EQ(map[1], 2);
+    map.insert(3, 4);
+    EXPECT_EQ(map[3], 4);
+    map.insert(3, 4);
 }
 
-TEST(MapTest, SwapMaps) {
-    s21::map<int, std::string> map1;
-    s21::map<int, std::string> map2;
+TEST(MAP, Insert_Or_Assign) {
+    s21::map<int, int> map;
+    map.insert_or_assign(1, 2);
 
-    map1.insert({1, "one"});
-    map1.insert({2, "two"});
-
-    map2.insert({3, "three"});
-    map2.insert({4, "four"});
-
-    map1.swap(map2);
-
-    EXPECT_TRUE(map1.contains(3));
-    EXPECT_TRUE(map1.contains(4));
-    EXPECT_FALSE(map1.contains(1));
-    EXPECT_FALSE(map1.contains(2));
-
-    EXPECT_TRUE(map2.contains(1));
-    EXPECT_TRUE(map2.contains(2));
-    EXPECT_FALSE(map2.contains(3));
-    EXPECT_FALSE(map2.contains(4));
+    EXPECT_EQ(map[1], 2);
 }
 
+TEST(MAP, Erase) {
+    s21::map<int, int> map;
+
+    map[1] = 2;
+    EXPECT_EQ(map[1], 2);
+    map.erase(map.begin());
+    EXPECT_EQ(map.size(), 0);
+    map[1] = 2;
+    EXPECT_EQ(map[1], 2);
+    map.erase(1);
+    EXPECT_EQ(map.size(), 0);
+}
+
+TEST(MAP, Swap) {
+    s21::map<int, int> map;
+    map[1] = 2;
+    s21::map<int, int> map2;
+    map2.swap(map);
+    EXPECT_EQ(map2[1], 2);
+}
+
+TEST(MAP, Merge) {
+    s21::map<int, int> map;
+    map[1] = 2;
+    s21::map<int, int> map2;
+    map2.merge(map);
+
+    EXPECT_EQ(map2[1], 2);
+    EXPECT_EQ(map.size(), 0);
+}
+
+TEST(MAP, Contains) {
+    s21::map<int, int> map;
+    map[1] = 2;
+    EXPECT_TRUE(map.contains(1));
+    EXPECT_FALSE(map.contains(2));
+}

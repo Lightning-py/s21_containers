@@ -4,6 +4,8 @@
 
 #include <gtest/gtest.h>
 
+#define INCLUDE
+
 #ifdef INCLUDE
 
 #include "array.cpp"
