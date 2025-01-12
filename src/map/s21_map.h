@@ -22,103 +22,49 @@ class map {
     // Constructors
 
     map() = default;
-    map(std::initializer_list<value_type> const& items) {
-        for (auto const& item : items) {
-            insert(item);
-        }
-    }
+    map(std::initializer_list<value_type> const& items);
 
-    map(const map& m) {
-        for (ConstIterator it = m.cbegin(); it != m.cend(); ++it) {
-            insert((*it).first, (*it).second);
-        }
-    }
+    map(const map& m);
 
-    map(map&& m) noexcept { tree.swap(m.tree); }
+    map(map&& m) noexcept;
     ~map() = default;
-    map& operator=(map&& m) noexcept {
-        std::swap(tree, m.tree);
-        return *this;
-    }
+    map& operator=(map&& m) noexcept;
 
     // Map element access
 
-    mapped_type& at(const key_type& key) {
-        auto it = tree.get(key);
-
-        if (it == tree.end()) {
-            throw std::out_of_range("key not found");
-        }
-
-        return (*it)->value;
-    }
-
-    mapped_type& operator[](const key_type& key) {
-        auto node = tree.get(key);
-
-        if (node == tree.end()) {
-            tree.insert(key, mapped_type());
-            node = tree.get(key);
-        }
-
-        return (*node)->value;
-    }
+    mapped_type& at(const key_type& key);
+    mapped_type& operator[](const key_type& key);
 
     // Map iterators
 
-    iterator begin() { return Iterator(tree.begin()); }
-    iterator end() { return Iterator(tree.end()); }
+    iterator begin();
+    iterator end();
 
-    const_iterator cbegin() const { return const_iterator(tree.cbegin()); }
-    const_iterator cend() const { return const_iterator(tree.cend()); }
+    const_iterator cbegin() const;
+    const_iterator cend() const;
 
     // Map Capacity
 
-    [[nodiscard]] bool empty() const { return tree.size() == 0; }
-    [[nodiscard]] size_type size() const { return tree.size(); }
-    [[nodiscard]] static size_type max_size() {
-        return std::numeric_limits<size_type>::max();
-    }
+    [[nodiscard]] bool empty() const;
+    [[nodiscard]] size_type size() const;
+    [[nodiscard]] static size_type max_size();
 
     // Map Modifiers
 
-    void clear() { tree.clear(); }
-    std::pair<iterator, bool> insert(const value_type& value) {
-        return insert(value.first, value.second);
-    }
+    void clear();
 
+    std::pair<iterator, bool> insert(const value_type& value);
     std::pair<iterator, bool> insert(const key_type& key,
-                                     const mapped_type& value) {
-        auto node = tree.get(key);
-
-        if (node != tree.end() && (*node)->value == value) {
-            return std::make_pair(iterator(node), false);
-        }
-
-        tree.insert(key, value);
-        node = tree.get(key);
-        return std::make_pair(iterator(node), true);
-    }
-
+                                     const mapped_type& value);
     std::pair<iterator, bool> insert_or_assign(const key_type& key,
-                                               const mapped_type& value) {
-        return insert(key, value);
-    }
+                                               const mapped_type& value);
 
-    void erase(iterator pos) { tree.remove((*pos).first); }
-    void erase(key_type key) { tree.remove(key); }
-    void swap(map& other) noexcept { tree.swap(other.tree); }
-    void merge(map& other) {
-        for (auto it = other.begin(); it != other.end(); ++it) {
-            insert(*it);
-        }
+    void erase(iterator pos);
+    void erase(key_type key);
+    void swap(map& other) noexcept;
+    void merge(map& other);
 
-        other.clear();
-    }
-
-    bool contains(const key_type& key) const {
-        return tree.get(key) != tree.end();
-    }
+    bool contains(const key_type& key) const;
 
    private:
     BinaryTree<key_type, mapped_type> tree;
@@ -140,39 +86,15 @@ class map<Key, Value>::Iterator {
     explicit Iterator(typename BinaryTree<Key, Value>::Iterator itr)
         : iterator(itr) {}
 
-    value_type operator*() const {
-        return std::make_pair((*iterator)->key, (*iterator)->value);
-    };
+    value_type operator*() const;
 
-    Iterator& operator++() {
-        ++iterator;
-        return *this;
-    }
+    Iterator& operator++();
+    Iterator& operator--();
+    Iterator operator++(int);
+    Iterator operator--(int);
 
-    Iterator& operator--() {
-        --iterator;
-        return *this;
-    }
-
-    Iterator operator++(int) {
-        Iterator tmp = *this;
-        ++iterator;
-        return tmp;
-    }
-
-    Iterator operator--(int) {
-        Iterator tmp = *this;
-        --iterator;
-        return tmp;
-    }
-
-    bool operator==(const Iterator& other) const {
-        return iterator == other.iterator;
-    }
-
-    bool operator!=(const Iterator& other) const {
-        return !(iterator == other.iterator);
-    }
+    bool operator==(const Iterator& other) const;
+    bool operator!=(const Iterator& other) const;
 
    protected:
     typename BinaryTree<Key, Value>::Iterator iterator;
@@ -194,42 +116,24 @@ class map<Key, Value>::ConstIterator {
     explicit ConstIterator(typename BinaryTree<Key, Value>::ConstIterator itr)
         : iterator(itr) {}
 
-    value_type operator*() const { return *iterator; };
+    value_type operator*() const;
 
-    ConstIterator& operator++() {
-        ++iterator;
-        return *this;
-    }
+    ConstIterator& operator++();
+    ConstIterator& operator--();
+    ConstIterator operator++(int);
+    ConstIterator operator--(int);
 
-    ConstIterator& operator--() {
-        --iterator;
-        return *this;
-    }
-
-    ConstIterator operator++(int) {
-        ConstIterator tmp = *this;
-        ++iterator;
-        return tmp;
-    }
-
-    ConstIterator operator--(int) {
-        ConstIterator tmp = *this;
-        --iterator;
-        return tmp;
-    }
-
-    bool operator==(const ConstIterator& other) const {
-        return iterator == other.iterator;
-    }
-
-    bool operator!=(const ConstIterator& other) const {
-        return !(iterator == other.iterator);
-    }
+    bool operator==(const ConstIterator& other) const;
+    bool operator!=(const ConstIterator& other) const;
 
    protected:
     typename BinaryTree<Key, Value>::ConstIterator iterator;
 };
 
 }  // namespace s21
+
+#include "./s21_map.tpp"
+#include "./s21_map_const_iterator.tpp"
+#include "./s21_map_iterator.tpp"
 
 #endif  // MAP_H
