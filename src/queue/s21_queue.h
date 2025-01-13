@@ -14,20 +14,20 @@ class queue {
     queue();
     queue(std::initializer_list<value_type> const &items);
     queue(const queue &q);
-    queue(queue &&q);
+    queue(queue &&q) noexcept;
     ~queue();
 
-    queue &operator=(queue &&q);
+    queue &operator=(queue &&q) noexcept;
 
     const_reference front() const noexcept;
     const_reference back() const noexcept;
 
-    bool empty() const noexcept;
-    size_type size() const noexcept;
+    [[nodiscard]] bool empty() const noexcept;
+    [[nodiscard]] size_type size() const noexcept;
 
     void push(const_reference value);
     void pop();
-    void swap(queue &q);
+    void swap(queue &q) noexcept;
 
    private:
     Container container_;

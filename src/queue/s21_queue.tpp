@@ -14,13 +14,14 @@ template <class T, class Container>
 queue<T, Container>::queue(const queue& q) : container_(q.container_) {}
 
 template <class T, class Container>
-queue<T, Container>::queue(queue&& q) : container_(std::move(q.container_)) {}
+queue<T, Container>::queue(queue&& q) noexcept
+    : container_(std::move(q.container_)) {}
 
 template <class T, class Container>
 queue<T, Container>::~queue() {}
 
 template <class T, class Container>
-queue<T, Container>& queue<T, Container>::operator=(queue&& q) {
+queue<T, Container>& queue<T, Container>::operator=(queue&& q) noexcept {
     if (this != &q) {
         container_ = std::move(q.container_);
     }
@@ -61,7 +62,7 @@ void queue<T, Container>::pop() {
 }
 
 template <class T, class Container>
-void queue<T, Container>::swap(queue& q) {
+void queue<T, Container>::swap(queue& q) noexcept {
     container_.swap(q.container_);
 }
 
