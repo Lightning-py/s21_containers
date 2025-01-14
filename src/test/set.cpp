@@ -1,85 +1,133 @@
-// #include <gtest/gtest.h>
-//
-// #include "../set/s21_set.h"
-//
-// TEST(SetTest, InsertElements) {
-//     s21::set<int> mySet;
-//
-//     mySet.insert(5);
-//     EXPECT_TRUE(mySet.contains(5));
-//     EXPECT_EQ(mySet.size(), 1);
-//
-//     mySet.insert(10);
-//     EXPECT_TRUE(mySet.contains(10));
-//     EXPECT_EQ(mySet.size(), 2);
-//
-//     mySet.insert(5);
-//     EXPECT_EQ(mySet.size(), 2);
-// }
-//
-// TEST(SetTest, RemoveElements) {
-//     s21::set<int> mySet;
-//
-//     mySet.insert(5);
-//     mySet.insert(10);
-//
-//     mySet.remove(5);
-//     EXPECT_FALSE(mySet.contains(5));
-//     EXPECT_EQ(mySet.size(), 1);
-//
-//     mySet.remove(10);
-//     EXPECT_TRUE(mySet.empty());
-// }
-//
-// TEST(SetTest, ContainsElement) {
-//     s21::set<int> mySet;
-//
-//     mySet.insert(42);
-//     EXPECT_TRUE(mySet.contains(42));
-//
-//     mySet.remove(42);
-//     EXPECT_FALSE(mySet.contains(42));
-// }
-//
-// TEST(SetTest, ClearSet) {
-//     s21::set<int> mySet;
-//
-//     mySet.insert(1);
-//     mySet.insert(2);
-//     mySet.insert(3);
-//
-//     mySet.clear();
-//     EXPECT_TRUE(mySet.empty());
-//     EXPECT_EQ(mySet.size(), 0);
-// }
-//
-// TEST(SetTest, Iterators) {
-//     s21::set<int> mySet;
-//
-//     mySet.insert(3);
-//     mySet.insert(1);
-//     mySet.insert(2);
-//
-//     std::vector<int> elements;
-//     for (auto it = mySet.begin(); it != mySet.end(); ++it) {
-//         elements.push_back((*it).first);
-//     }
-//
-//     EXPECT_EQ(elements, std::vector<int>({1, 2, 3}));
-// }
-//
-// TEST(SetTest, EqualityCheck) {
-//     s21::set<int> set1;
-//     s21::set<int> set2;
-//
-//     set1.insert(1);
-//     set1.insert(2);
-//
-//     set2.insert(2);
-//     set2.insert(1);
-//
-//     EXPECT_TRUE(set1 == set2);
-//
-//     set2.insert(3);
-//     EXPECT_FALSE(set1 == set2);
-// }
+#include <gtest/gtest.h>
+
+#include "../set/s21_set.h"
+
+TEST(SET, Default_constructor) {
+    s21::set<int> set;
+    EXPECT_EQ(set.size(), 0);
+}
+
+TEST(SET, Initializer_list_constructor) {
+    s21::set<int> set = {1, 2, 3, 4, 5};
+
+    EXPECT_EQ(set.size(), 5);
+    EXPECT_TRUE(set.contains(1));
+    EXPECT_TRUE(set.contains(2));
+    EXPECT_TRUE(set.contains(3));
+    EXPECT_TRUE(set.contains(4));
+    EXPECT_TRUE(set.contains(5));
+}
+
+TEST(SET, Copy_Constructor) {
+    const s21::set<int> set = {1, 2, 3, 4, 5};
+    const s21::set<int>& copy = set;
+
+    EXPECT_EQ(copy.size(), 5);
+    EXPECT_TRUE(copy.contains(1));
+    EXPECT_TRUE(copy.contains(2));
+    EXPECT_TRUE(copy.contains(3));
+    EXPECT_TRUE(copy.contains(4));
+    EXPECT_TRUE(copy.contains(5));
+}
+
+TEST(SET, Move_constructor) {
+    s21::set<int> set = {1, 2, 3, 4, 5};
+    s21::set<int> set2(std::move(set));
+
+    EXPECT_EQ(set2.size(), 5);
+    EXPECT_TRUE(set2.contains(1));
+    EXPECT_TRUE(set2.contains(2));
+    EXPECT_TRUE(set2.contains(3));
+    EXPECT_TRUE(set2.contains(4));
+    EXPECT_TRUE(set2.contains(5));
+}
+
+TEST(SET, Equal_operator) {
+    const s21::set<int> set = {1, 2, 3, 4, 5};
+    const s21::set<int>& set2 = set;
+
+    EXPECT_EQ(set2.size(), 5);
+    EXPECT_TRUE(set2.contains(1));
+    EXPECT_TRUE(set2.contains(2));
+    EXPECT_TRUE(set2.contains(3));
+    EXPECT_TRUE(set2.contains(4));
+    EXPECT_TRUE(set2.contains(5));
+}
+
+TEST(SET, Empty) {
+    s21::set<int> set;
+
+    EXPECT_TRUE(set.empty());
+    set.insert(1);
+    EXPECT_FALSE(set.empty());
+}
+
+TEST(SET, Size) {
+    s21::set<int> set = {1, 2, 3, 4, 5};
+    EXPECT_EQ(set.size(), 5);
+}
+
+TEST(SET, Max_size) {
+    s21::set<int> set = {1, 2, 3, 4, 5};
+    EXPECT_EQ(set.max_size(), std::numeric_limits<size_t>::max());
+}
+
+TEST(SET, Clear) {
+    s21::set<int> set = {1, 2, 3, 4, 5};
+    set.clear();
+    EXPECT_TRUE(set.empty());
+    EXPECT_EQ(set.size(), 0);
+}
+
+TEST(SET, Insert) {
+    s21::set<int> set;
+    auto it = set.insert(1).first;
+
+    EXPECT_TRUE(set.contains(1));
+    EXPECT_EQ(*it, 1);
+}
+
+TEST(SET, Erase) {
+    s21::set<int> set = {1};
+
+    set.erase(set.begin());
+    EXPECT_TRUE(set.empty());
+    EXPECT_FALSE(set.contains(1));
+}
+
+TEST(SET, Swap) {
+    s21::set<int> set = {1, 2};
+    s21::set<int> set2 = {10};
+
+    set.swap(set2);
+    EXPECT_EQ(set.size(), 1);
+    EXPECT_EQ(set2.size(), 2);
+    EXPECT_TRUE(set.contains(10));
+    EXPECT_TRUE(set2.contains(1));
+    EXPECT_TRUE(set2.contains(2));
+}
+
+TEST(SET, Merge) {
+    s21::set<int> set = {1, 2};
+    s21::set<int> set2 = {10};
+
+    set.merge(set2);
+    EXPECT_EQ(set.size(), 3);
+    EXPECT_TRUE(set.contains(10));
+    EXPECT_TRUE(set.contains(1));
+    EXPECT_TRUE(set.contains(2));
+}
+
+TEST(SET, Find) {
+    s21::set<int> set = {1, 2, 3, 4, 5};
+
+    EXPECT_EQ(set.find(1), set.begin());
+    EXPECT_EQ(set.find(100), set.end());
+}
+
+TEST(SET, Contains) {
+    s21::set<int> set = {1, 2, 3, 4, 5};
+
+    EXPECT_TRUE(set.contains(1));
+    EXPECT_FALSE(set.contains(100));
+}
