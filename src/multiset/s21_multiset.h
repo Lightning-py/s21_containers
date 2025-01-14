@@ -24,18 +24,23 @@ class multiset {
 
     multiset() = default;
     multiset(std::initializer_list<value_type> const &items) {
-        for (auto const &item : items) {
-            insert(item);
+        copies = 0;
+        for (auto const item : items) {
+            insert_(item);
         }
     }
 
     multiset(const multiset &ms) {
-        for (auto const &item : ms) {
-            insert(item);
+        copies = 0;
+        for (auto iter = ms.cbegin(); iter != ms.cend(); ++iter) {
+            insert_(*iter);
         }
     }
 
-    multiset(multiset &&ms) noexcept { std::swap(ms.map_, map_); }
+    multiset(multiset &&ms) noexcept {
+        map_.swap(ms.map_);
+        std::swap(copies, ms.copies);
+    }
     ~multiset() = default;
     multiset &operator=(multiset &&ms) noexcept {
         std::swap(ms.map_, map_);
@@ -46,31 +51,41 @@ class multiset {
 
     iterator begin() { return iterator(map_.begin(), 1); }
     iterator end() { return iterator(map_.end(), 1); }
+    const_iterator cbegin() const { return const_iterator(map_.cbegin(), 1); }
+    const_iterator cend() const { return const_iterator(map_.cend(), 1); }
 
     // Multiset Capacity
 
     [[nodiscard]] bool empty() const { return map_.empty(); }
-    [[nodiscard]] size_type size() const { return map_.size(); }
+    [[nodiscard]] size_type size() const { return map_.size() + copies; }
     [[nodiscard]] size_type max_size() const { return map_.max_size(); }
 
     // Multiset Modifiers
 
-    void clear() { map_.clear(); }
+    void clear() {
+        map_.clear();
+        copies = 0;
+    }
 
     iterator insert(value_type &value) {
         size_type how_many = 0;
 
-        if (map_.contains(value)) how_many = map_.get(value);
+        if (map_.contains(value)) {
+            how_many = map_[value];
+            copies++;
+        }
         how_many++;
 
         return iterator(map_.insert(value, how_many).first, how_many);
     }
 
-    iterator insert(value_type value) {
+    iterator insert_(value_type value) {
+        // return insert(value);
         size_type how_many = 0;
 
         if (map_.contains(value)) {
             how_many = map_[value];
+            copies++;
         }
         how_many++;
 
@@ -78,28 +93,31 @@ class multiset {
     }
 
     void erase(iterator pos) {
-        value_type value = *(pos.it_).first;
-
-        if (map_[value] == 0) return;
+        value_type value = (*pos.it_).first;
 
         if (map_[value] == 1) {
             map_.erase(value);
         } else {
             map_[value] = map_[value]--;
+            copies--;
         }
     }
 
-    void swap(multiset &ms) noexcept { std::swap(ms.map_, map_); }
+    void swap(multiset &ms) noexcept {
+        map_.swap(ms.map_);
+        std::swap(copies, ms.copies);
+    }
+
     void merge(multiset &ms) {
-        for (auto const &item : ms) {
-            insert(item);
+        for (auto iter = ms.cbegin(); iter != ms.cend(); ++iter) {
+            insert_(*iter);
         }
 
         ms.clear();
     }
 
     size_type count(value_type value) { return map_[value]; }
-    iterator find(const key_type &key) { return map_.find(key); }
+    iterator find(const key_type &key) { return iterator(map_.find(key), 1); }
     bool contains(value_type value) { return map_.contains(value); }
     std::pair<iterator, iterator> equal_range(const key_type &key) {
         auto range = map_.find(key);
@@ -109,8 +127,35 @@ class multiset {
         return std::make_pair(lower, upper);
     }
 
+    iterator lower_bound(const key_type &key) {
+        key_type lower = key_type();
+        iterator result = end();
+        for (auto it = begin(); it != end(); ++it) {
+            if (*it < key && *it >= lower) {
+                lower = *it;
+                result = it;
+            }
+        }
+
+        return result;
+    }
+
+    iterator upper_bound(const key_type &key) {
+        key_type upper = key_type();
+        iterator result = end();
+        for (auto it = begin(); it != end(); ++it) {
+            if (*it > key && *it <= upper) {
+                upper = *it;
+                result = it;
+            }
+        }
+
+        return result;
+    }
+
    private:
     map<key_type, size_type> map_;
+    size_type copies{};
 };
 
 template <typename T>
@@ -133,9 +178,9 @@ class multiset<T>::Iterator {
         index_ = index;
     }
 
-    reference operator*() { return it_->first; }
+    value_type operator*() { return (*it_).first; }
     Iterator &operator++() {
-        if (index_ < it_->second)
+        if (index_ < (*it_).second)
             index_++;
         else {
             ++it_;
@@ -177,6 +222,74 @@ class multiset<T>::Iterator {
     }
 
     typename map<T, multiset<T>::size_type>::Iterator it_;
+    size_type index_;
+};
+
+template <typename T>
+class multiset<T>::ConstIterator {
+   public:
+    using size_type = multiset<T>::size_type;
+    using iterator_category = std::bidirectional_iterator_tag;
+    using value_type = multiset<T>::key_type;
+    using difference_type = std::ptrdiff_t;
+    using pointer = typename map<T, size_type>::ConstIterator;
+    using reference = T &;
+
+    explicit ConstIterator(typename map<T, size_type>::ConstIterator it) {
+        it_ = it;
+        index_ = 1;
+    }
+
+    ConstIterator(typename map<T, size_type>::ConstIterator it,
+                  const size_type index) {
+        it_ = it;
+        index_ = index;
+    }
+
+    value_type operator*() { return (*it_).first; }
+    ConstIterator &operator++() {
+        if (index_ < (*it_).second)
+            index_++;
+        else {
+            ++it_;
+            index_ = 1;
+        }
+
+        return *this;
+    }
+
+    ConstIterator &operator--() {
+        if (index_ > 0)
+            index_--;
+        else {
+            --it_;
+            index_ = 1;
+        }
+
+        return *this;
+    }
+
+    ConstIterator operator++(int) {
+        ConstIterator tmp = *this;
+        ++(*this);
+        return tmp;
+    }
+
+    ConstIterator operator--(int) {
+        ConstIterator tmp = *this;
+        --(*this);
+        return tmp;
+    }
+
+    bool operator==(const ConstIterator &other) const {
+        return it_ == other.it_ && index_ == other.index_;
+    }
+
+    bool operator!=(const ConstIterator &other) const {
+        return it_ != other.it_ || index_ != other.index_;
+    }
+
+    typename map<T, multiset<T>::size_type>::ConstIterator it_;
     size_type index_;
 };
 
