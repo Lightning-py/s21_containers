@@ -13,13 +13,14 @@ template <class T, class Container>
 stack<T, Container>::stack(const stack &s) : container_(s.container_){};
 
 template <class T, class Container>
-stack<T, Container>::stack(stack &&s) : container_(std::move(s.container_)){};
+stack<T, Container>::stack(stack &&s) noexcept
+    : container_(std::move(s.container_)){};
 
 template <class T, class Container>
 stack<T, Container>::~stack() {}
 
 template <class T, class Container>
-stack<T, Container> &stack<T, Container>::operator=(stack &&s) {
+stack<T, Container> &stack<T, Container>::operator=(stack &&s) noexcept {
     if (this != &s) {
         container_ = std::move(s.container_);
     }
@@ -53,7 +54,7 @@ void stack<T, Container>::pop() {
 }
 
 template <class T, class Container>
-void stack<T, Container>::swap(stack &s) {
+void stack<T, Container>::swap(stack &s) noexcept {
     container_.swap(s.container_);
 }
 

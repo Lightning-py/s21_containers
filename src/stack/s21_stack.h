@@ -14,19 +14,19 @@ class stack {
     stack();
     stack(std::initializer_list<value_type> const &items);
     stack(const stack &s);
-    stack(stack &&s);
+    stack(stack &&s) noexcept;
     ~stack();
 
-    stack &operator=(stack &&s);
+    stack &operator=(stack &&s) noexcept;
 
     const_reference top() const;
 
-    bool empty() const noexcept;
-    size_type size() const noexcept;
+    [[nodiscard]] bool empty() const noexcept;
+    [[nodiscard]] size_type size() const noexcept;
 
     void push(const_reference value);
     void pop();
-    void swap(stack &s);
+    void swap(stack &s) noexcept;
 
    private:
     Container container_;
