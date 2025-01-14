@@ -64,6 +64,8 @@ class map {
     void swap(map& other) noexcept;
     void merge(map& other);
 
+    iterator find(const key_type& key);
+
     bool contains(const key_type& key) const;
 
    private:

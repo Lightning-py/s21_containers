@@ -46,7 +46,8 @@ typename map<Key, Value>::mapped_type& map<Key, Value>::at(
 }
 
 template <typename Key, typename Value>
-typename map<Key, Value>::mapped_type& map<Key, Value>::operator[](const key_type& key) {
+typename map<Key, Value>::mapped_type& map<Key, Value>::operator[](
+    const key_type& key) {
     auto node = tree.get(key);
 
     if (node == tree.end()) {
@@ -80,10 +81,13 @@ typename map<Key, Value>::const_iterator map<Key, Value>::cend() const {
 
 // Map Capacity
 template <typename Key, typename Value>
-[[nodiscard]] bool map<Key, Value>::empty() const { return tree.size() == 0; }
+[[nodiscard]] bool map<Key, Value>::empty() const {
+    return tree.size() == 0;
+}
 
 template <typename Key, typename Value>
-[[nodiscard]] typename map<Key, Value>::size_type map<Key, Value>::size() const {
+[[nodiscard]] typename map<Key, Value>::size_type map<Key, Value>::size()
+    const {
     return tree.size();
 }
 
@@ -95,16 +99,19 @@ template <typename Key, typename Value>
 // Map Modifiers
 
 template <typename Key, typename Value>
-void map<Key, Value>::clear() { tree.clear(); }
+void map<Key, Value>::clear() {
+    tree.clear();
+}
 
 template <typename Key, typename Value>
-std::pair<typename map<Key, Value>::iterator, bool> map<Key, Value>::insert(const value_type& value) {
+std::pair<typename map<Key, Value>::iterator, bool> map<Key, Value>::insert(
+    const value_type& value) {
     return insert(value.first, value.second);
 }
 
 template <typename Key, typename Value>
-std::pair<typename map<Key, Value>::iterator, bool> map<Key, Value>::insert(const key_type& key,
-                                 const mapped_type& value) {
+std::pair<typename map<Key, Value>::iterator, bool> map<Key, Value>::insert(
+    const key_type& key, const mapped_type& value) {
     auto node = tree.get(key);
 
     if (node != tree.end() && (*node)->value == value) {
@@ -117,19 +124,26 @@ std::pair<typename map<Key, Value>::iterator, bool> map<Key, Value>::insert(cons
 }
 
 template <typename Key, typename Value>
-std::pair<typename map<Key, Value>::iterator, bool> map<Key, Value>::insert_or_assign(const key_type& key,
-                                           const mapped_type& value) {
+std::pair<typename map<Key, Value>::iterator, bool>
+map<Key, Value>::insert_or_assign(const key_type& key,
+                                  const mapped_type& value) {
     return insert(key, value);
 }
 
 template <typename Key, typename Value>
-void map<Key, Value>::erase(iterator pos) { tree.remove((*pos).first); }
+void map<Key, Value>::erase(iterator pos) {
+    tree.remove((*pos).first);
+}
 
 template <typename Key, typename Value>
-void map<Key, Value>::erase(key_type key) { tree.remove(key); }
+void map<Key, Value>::erase(key_type key) {
+    tree.remove(key);
+}
 
 template <typename Key, typename Value>
-void map<Key, Value>::swap(map& other) noexcept { tree.swap(other.tree); }
+void map<Key, Value>::swap(map& other) noexcept {
+    tree.swap(other.tree);
+}
 
 template <typename Key, typename Value>
 void map<Key, Value>::merge(map& other) {
@@ -141,6 +155,17 @@ void map<Key, Value>::merge(map& other) {
 }
 
 template <typename Key, typename Value>
-bool map<Key, Value>::contains(const key_type& key) const { return tree.get(key) != tree.end(); }
+typename map<Key, Value>::iterator map<Key, Value>::find(const key_type& key) {
+    auto it = tree.get(key);
+    if (it == tree.end()) {
+        return end();
+    }
+    return iterator(it);
+}
+
+template <typename Key, typename Value>
+bool map<Key, Value>::contains(const key_type& key) const {
+    return tree.get(key) != tree.end();
+}
 
 }  // namespace s21
