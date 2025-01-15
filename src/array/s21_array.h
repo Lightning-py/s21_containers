@@ -68,26 +68,20 @@ class array {
     }
 
     reference operator[](size_type pos) { return elements_[pos]; }
-
     const_reference front() const { return elements_[0]; }
-
     const_reference back() const { return elements_[N - 1]; }
 
     iterator data() { return elements_; }
 
     iterator begin() { return elements_; }
-
     iterator end() { return elements_ + N; }
 
     const_iterator begin() const { return elements_; }
-
     const_iterator end() const { return elements_ + N; }
 
-    bool empty() const { return N == 0; }
-
-    size_type size() const { return N; }
-
-    size_type max_size() const { return N; }
+    [[nodiscard]] static bool empty() { return N == 0; }
+    [[nodiscard]] static size_type size() { return N; }
+    [[nodiscard]] static size_type max_size() { return N; }
 
     void swap(array &other)
 
