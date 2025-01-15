@@ -152,3 +152,16 @@ TEST(MULTISET, Lower_bound) {
 
     EXPECT_EQ(multiset.lower_bound(2), multiset.begin());
 }
+
+TEST(MULTISET, Insert_many) {
+    s21::multiset<int> multiset = {1, 2};
+
+    int a = 1;
+    int b = 2;
+
+    const auto result = multiset.insert_many(a, b);
+
+    EXPECT_EQ(result.size(), 2);
+    EXPECT_TRUE(multiset.contains(1));
+    EXPECT_TRUE(multiset.contains(2));
+}
