@@ -313,3 +313,45 @@ TEST(LIST, splice) {
     ++iter;
     EXPECT_EQ(*iter, 5);
 }
+
+TEST(LIST, Insert_many) {
+    s21::list<int> a = {1, 2};
+    a.insert_many(a.cbegin() + 1, 3, 4);
+
+    auto iter = a.begin();
+    EXPECT_EQ(*iter, 1);
+    ++iter;
+    EXPECT_EQ(*iter, 3);
+    ++iter;
+    EXPECT_EQ(*iter, 4);
+    ++iter;
+    EXPECT_EQ(*iter, 2);
+}
+
+TEST(LIST, Insert_many_back) {
+    s21::list<int> a = {1, 2};
+    a.insert_many_back(3, 4);
+
+    auto iter = a.begin();
+    EXPECT_EQ(*iter, 1);
+    ++iter;
+    EXPECT_EQ(*iter, 2);
+    ++iter;
+    EXPECT_EQ(*iter, 3);
+    ++iter;
+    EXPECT_EQ(*iter, 4);
+}
+
+TEST(LIST, Insert_many_front) {
+    s21::list<int> a = {1, 2};
+    a.insert_many_front(3, 4);
+
+    auto iter = a.begin();
+    EXPECT_EQ(*iter, 3);
+    ++iter;
+    EXPECT_EQ(*iter, 4);
+    ++iter;
+    EXPECT_EQ(*iter, 1);
+    ++iter;
+    EXPECT_EQ(*iter, 2);
+}

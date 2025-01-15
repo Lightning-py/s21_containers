@@ -329,4 +329,39 @@ void list<T>::sort() {
     mergeSort(*this);
 }
 
+template <typename T>
+template <typename... Args>
+typename list<T>::iterator list<T>::insert_many(const_iterator pos,
+                                                Args&&... args) {
+    vector<T> tmp{args...};
+    iterator pos_ = begin() + (pos - cbegin());
+
+    for (auto n : tmp) {
+        insert(pos_, n);
+    }
+
+    return pos_;
+}
+
+template <typename T>
+template <typename... Args>
+void list<T>::insert_many_back(Args&&... args) {
+    vector<T> tmp{args...};
+
+    for (auto n : tmp) {
+        push_back(n);
+    }
+}
+
+template <typename T>
+template <typename... Args>
+void list<T>::insert_many_front(Args&&... args) {
+    vector<T> tmp{args...};
+    std::reverse(tmp.begin(), tmp.end());
+
+    for (auto n : tmp) {
+        push_front(n);
+    }
+}
+
 }  // namespace s21
