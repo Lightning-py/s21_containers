@@ -72,18 +72,7 @@ void queue<T, Container>::insert_many_back(Args&&... args) {
     vector<T> tmp{args...};
 
     for (auto n : tmp) {
-        container_.push_back(n);
-    }
-}
-
-template <class T, class Container>
-template <typename... Args>
-void queue<T, Container>::insert_many_front(Args&&... args) {
-    vector<T> tmp{args...};
-    std::reverse(tmp.begin(), tmp.end());
-
-    for (auto n : tmp) {
-        container_.push_front(n);
+        push(n);
     }
 }
 

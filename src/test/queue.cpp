@@ -156,18 +156,6 @@ TEST(QUEUE, size_of_const_queue) {
     EXPECT_EQ(constQueue.size(), 3);
 }
 
-TEST(QUEUE, Insert_many_front) {
-    s21::queue<int> queue({1, 2, 3});
-
-    queue.insert_many_front(5, 6);
-
-    EXPECT_EQ(queue.front(), 5);
-    queue.pop();
-    EXPECT_EQ(queue.front(), 6);
-    queue.pop();
-    EXPECT_EQ(queue.front(), 1);
-}
-
 TEST(QUEUE, Insert_many_back) {
     s21::queue<int> queue({1, 2, 3});
 
