@@ -148,3 +148,16 @@ TEST(MAP, Contains) {
     EXPECT_TRUE(map.contains(1));
     EXPECT_FALSE(map.contains(2));
 }
+
+TEST(MAP, Insert_many) {
+    s21::map<int, int> map;
+
+    auto pair1 = std::make_pair(1, 2);
+    auto pair2 = std::make_pair(3, 4);
+
+    const auto result = map.insert_many(pair1, pair2);
+
+    EXPECT_EQ(result.size(), 2);
+    EXPECT_EQ(map[1], 2);
+    EXPECT_EQ(map[3], 4);
+}
