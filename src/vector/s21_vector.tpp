@@ -138,7 +138,10 @@ template <typename T>
 typename vector<T>::iterator vector<T>::insert(iterator pos,
                                                const_reference value) {
     int index = pos - this->begin();
-    if (index >= capacity_) this->reserve(index + 1);
+    if (index >= capacity_)
+        this->reserve(index + 1);
+    else if (size_ + 1 >= capacity_)
+        this->reserve(capacity_ + 1);
 
     for (int i = size_; i > index; --i) {
         data_[i] = data_[i - 1];
@@ -190,4 +193,30 @@ void vector<T>::swap(vector &other) noexcept {
     std::swap(data_, other.data_);
     std::swap(capacity_, other.capacity_);
 }
+
+template <typename T>
+template <typename... Args>
+typename vector<T>::iterator vector<T>::insert_many(const_iterator pos,
+                                                    Args &&...args) {
+    size_type index = pos - cbegin();
+    vector<value_type> tmp{args...};
+    std::reverse(tmp.begin(), tmp.end());
+
+    for (auto it = tmp.begin(); it != tmp.end(); ++it) {
+        insert(iterator(data_ + index), *it);
+    }
+
+    return iterator(data_ + index);
+}
+
+template <typename T>
+template <typename... Args>
+void vector<T>::insert_many_back(Args &&...args) {
+    vector<value_type> tmp{args...};
+
+    for (auto it = tmp.begin(); it != tmp.end(); ++it) {
+        push_back(*it);
+    }
+}
+
 }  // namespace s21

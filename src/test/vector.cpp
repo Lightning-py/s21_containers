@@ -271,3 +271,24 @@ TEST(VECTOR, std_copy) {
 
     std::copy(a.begin(), a.end(), b.begin());
 }
+
+TEST(VECTOR, Insert_many) {
+    s21::vector<int> a = {1, 2};
+
+    a.insert_many(s21::vector<int>::const_iterator(a.data() + 1), 3, 4);
+
+    EXPECT_EQ(a[0], 1);
+    EXPECT_EQ(a[1], 3);
+    EXPECT_EQ(a[2], 4);
+    EXPECT_EQ(a[3], 2);
+}
+
+TEST(VECTOR, Insert_many_back) {
+    s21::vector<int> a = {1, 2};
+    a.insert_many_back(3, 4);
+
+    EXPECT_EQ(a[0], 1);
+    EXPECT_EQ(a[1], 2);
+    EXPECT_EQ(a[2], 3);
+    EXPECT_EQ(a[3], 4);
+}

@@ -69,6 +69,12 @@ class vector {
     void push_back(const_reference value);
     void pop_back();
     void swap(vector& other) noexcept;
+
+    template <typename... Args>
+    iterator insert_many(const_iterator pos, Args&&... args);
+
+    template <typename... Args>
+    void insert_many_back(Args&&... args);
 };
 
 template <typename T>
@@ -90,6 +96,7 @@ class vector<T>::VectorIterator {
     VectorIterator operator--(int);
     VectorIterator operator+(int n);
     VectorIterator operator-(int n);
+    bool operator<(const VectorIterator& other) const;
     int operator-(const VectorIterator& other);
     bool operator==(const VectorIterator& other) const;
     bool operator!=(const VectorIterator& other) const;

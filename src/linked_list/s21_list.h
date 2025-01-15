@@ -6,6 +6,7 @@
 #define LINKED_LIST_H
 
 #include "../shared/shared.cpp"
+#include "../vector/s21_vector.h"
 #include "node.h"
 
 namespace s21 {
@@ -66,6 +67,15 @@ class list {
     void sort();
 
     [[nodiscard]] size_type size() const { return size_; }
+
+    template <typename... Args>
+    iterator insert_many(const_iterator pos, Args&&... args);
+
+    template <typename... Args>
+    void insert_many_back(Args&&... args);
+
+    template <typename... Args>
+    void insert_many_front(Args&&... args);
 
    protected:
     ListNode<T>* head;

@@ -28,6 +28,9 @@ class stack {
     void pop();
     void swap(stack &s) noexcept;
 
+    template <typename... Args>
+    void insert_many_back(Args &&...args);
+
    private:
     Container container_;
 };

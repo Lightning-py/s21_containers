@@ -58,6 +58,16 @@ void stack<T, Container>::swap(stack &s) noexcept {
     container_.swap(s.container_);
 }
 
+template <class T, class Container>
+template <typename... Args>
+void stack<T, Container>::insert_many_back(Args &&...args) {
+    vector<T> tmp{args...};
+
+    for (auto n : tmp) {
+        push(n);
+    }
+}
+
 };  // namespace s21
 
 #endif  // S21_STACK_TPP

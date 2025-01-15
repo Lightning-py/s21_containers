@@ -153,6 +153,17 @@ class multiset {
         return result;
     }
 
+    template <typename... Args>
+    vector<std::pair<iterator, bool>> insert_many(Args &&...args) {
+        vector<std::pair<iterator, bool>> result;
+
+        for (const auto item : {args...}) {
+            result.push_back(std::make_pair(insert_(item), true));
+        }
+
+        return result;
+    }
+
    private:
     map<key_type, size_type> map_;
     size_type copies{};
@@ -167,6 +178,8 @@ class multiset<T>::Iterator {
     using difference_type = std::ptrdiff_t;
     using pointer = typename map<T, size_type>::Iterator;
     using reference = T &;
+
+    explicit Iterator() = default;
 
     explicit Iterator(typename map<T, size_type>::Iterator it) {
         it_ = it;

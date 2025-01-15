@@ -1,6 +1,7 @@
 #ifndef MAP_H
 #define MAP_H
 #include "../binary_tree/binary_tree.h"
+#include "../vector/s21_vector.h"
 
 namespace s21 {
 
@@ -67,6 +68,9 @@ class map {
     iterator find(const key_type& key);
 
     bool contains(const key_type& key) const;
+
+    template <typename... Args>
+    vector<std::pair<iterator, bool>> insert_many(Args&&... args);
 
    private:
     BinaryTree<key_type, mapped_type> tree;

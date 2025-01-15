@@ -61,4 +61,9 @@ int vector<T>::VectorIterator::operator-(const VectorIterator& other) {
     return ptr_ - other.ptr_;
 }
 
+template <typename T>
+bool vector<T>::VectorIterator::operator<(const VectorIterator& other) const {
+    return ptr_ < other.ptr_;
+}
+
 }  // namespace s21

@@ -168,4 +168,20 @@ bool map<Key, Value>::contains(const key_type& key) const {
     return tree.get(key) != tree.end();
 }
 
+template <typename Key, typename Value>
+template <typename... Args>
+vector<std::pair<typename map<Key, Value>::iterator, bool>>
+map<Key, Value>::insert_many(Args&&... args) {
+    // vector<value_type> tmp = {std::forward<Args>(args)...};
+    // (tmp.push_back(std::forward<Args>(args)), ...);
+
+    vector<std::pair<typename map<Key, Value>::iterator, bool>> result;
+
+    for (const auto& pair : {args...}) {
+        result.push_back(insert(pair.first, pair.second));
+    }
+
+    return result;
+}
+
 }  // namespace s21

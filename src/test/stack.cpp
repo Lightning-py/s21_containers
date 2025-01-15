@@ -163,3 +163,15 @@ TEST(STACK, swap_with_different_containers) {
     EXPECT_EQ(stack1.size(), 3);
     EXPECT_EQ(stack2.size(), 3);
 }
+
+TEST(STACK, Insert_many_back) {
+    s21::stack<int> stack({1, 2});
+
+    stack.insert_many_back(4, 5);
+
+    EXPECT_EQ(stack.top(), 5);
+    stack.pop();
+    EXPECT_EQ(stack.top(), 4);
+    stack.pop();
+    EXPECT_EQ(stack.top(), 2);
+}
