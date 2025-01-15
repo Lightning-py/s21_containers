@@ -131,3 +131,16 @@ TEST(SET, Contains) {
     EXPECT_TRUE(set.contains(1));
     EXPECT_FALSE(set.contains(100));
 }
+
+TEST(SET, Insert_many) {
+    s21::set<int> set = {1, 2};
+
+    int a = 1;
+    int b = 2;
+
+    const auto result = set.insert_many(a, b);
+
+    EXPECT_EQ(result.size(), 2);
+    EXPECT_TRUE(set.contains(1));
+    EXPECT_TRUE(set.contains(2));
+}

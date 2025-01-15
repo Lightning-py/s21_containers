@@ -77,6 +77,17 @@ class set {
 
     bool contains(const key_type &key) const { return map_.contains(key); }
 
+    template <typename... Args>
+    vector<std::pair<iterator, bool>> insert_many(Args &&...args) {
+        vector<std::pair<iterator, bool>> result;
+
+        for (const auto item : {args...}) {
+            result.push_back(insert(item));
+        }
+
+        return result;
+    }
+
    private:
     map<Key, bool> map_;
 };
@@ -84,6 +95,8 @@ class set {
 template <typename Key>
 class set<Key>::Iterator : public map<Key, bool>::iterator {
    public:
+    explicit Iterator() = default;
+
     explicit Iterator(typename map<Key, bool>::iterator const &it)
         : map<Key, bool>::iterator(it) {}
 
