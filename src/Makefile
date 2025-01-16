@@ -9,7 +9,7 @@ TESTS=./test/test.cpp
 FILES= $(SOURCES) ./test/*
 
 CFLAGS= -o test -Wall -Wextra
-LDFLAGS=-lpthread -lgtest --coverage
+LDFLAGS=-lpthread -lgtest --coverage -ld_classic
 VALGRIND_FLAGS=--leak-check=full
 
 
