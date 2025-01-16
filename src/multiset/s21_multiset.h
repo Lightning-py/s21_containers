@@ -128,8 +128,8 @@ class multiset {
   }
 
   iterator lower_bound(const key_type &key) {
-    key_type lower = key_type();
-    iterator result = end();
+    key_type lower = *(begin());
+    iterator result = begin();
     for (auto it = begin(); it != end(); ++it) {
       if (*it < key && *it >= lower) {
         lower = *it;
@@ -141,8 +141,8 @@ class multiset {
   }
 
   iterator upper_bound(const key_type &key) {
-    key_type upper = key_type();
-    iterator result = end();
+    key_type upper = *(begin());
+    iterator result = begin();
     for (auto it = begin(); it != end(); ++it) {
       if (*it > key && *it <= upper) {
         upper = *it;

@@ -141,16 +141,18 @@ TEST(MULTISET, Equal_range) {
 TEST(MULTISET, Upper_bound) {
   s21::multiset<int> multiset = {-2, -1};
 
-  auto it = multiset.begin();
-  ++it;
+  auto result = multiset.upper_bound(-3);
 
-  EXPECT_EQ(multiset.upper_bound(-2), it);
+  EXPECT_EQ(result, multiset.begin());
 }
 
 TEST(MULTISET, Lower_bound) {
   s21::multiset<int> multiset = {1, 2};
 
-  EXPECT_EQ(multiset.lower_bound(2), multiset.begin());
+  auto it = multiset.begin();
+  ++it;
+
+  EXPECT_EQ(multiset.lower_bound(3), it);
 }
 
 TEST(MULTISET, Insert_many) {
