@@ -7,12 +7,14 @@ namespace s21 {
 
 template <typename T>
 vector<T>::vector(std::initializer_list<T> const &items)
-    : size_(items.size()), capacity_(items.size()),
+    : size_(items.size()),
+      capacity_(items.size()),
       data_(new value_type[items.size()]) {
   std::copy(items.begin(), items.end(), begin());
 }
 
-template <typename T> vector<T>::vector(const vector &v) : size_(v.size()) {
+template <typename T>
+vector<T>::vector(const vector &v) : size_(v.size()) {
   data_ = new value_type[v.capacity_];
   capacity_ = v.capacity_;
   std::copy(v.cbegin(), v.cend(), begin());
@@ -26,14 +28,16 @@ vector<T>::vector(vector &&v) noexcept
   v.size_ = 0;
 }
 
-template <typename T> vector<T>::~vector() {
+template <typename T>
+vector<T>::~vector() {
   delete[] data_;
   size_ = 0;
   capacity_ = 0;
   data_ = nullptr;
 }
 
-template <typename T> vector<T> &vector<T>::operator=(vector &&v) noexcept {
+template <typename T>
+vector<T> &vector<T>::operator=(vector &&v) noexcept {
   if (this != &v) {
     delete[] data_;
     data_ = v.data_;
@@ -62,26 +66,31 @@ typename vector<T>::reference vector<T>::operator[](size_type pos) {
   return data_[pos];
 }
 
-template <typename T> typename vector<T>::const_reference vector<T>::front() {
-  if (size_ > 0)
-    return data_[0];
+template <typename T>
+typename vector<T>::const_reference vector<T>::front() {
+  if (size_ > 0) return data_[0];
 
   throw std::out_of_range("Vector Error: Index out of range");
 }
 
-template <typename T> typename vector<T>::const_reference vector<T>::back() {
-  if (size_ > 0)
-    return data_[size_ - 1];
+template <typename T>
+typename vector<T>::const_reference vector<T>::back() {
+  if (size_ > 0) return data_[size_ - 1];
   throw std::out_of_range("Vector Error: Index out of range");
 }
 
-template <typename T> typename vector<T>::pointer vector<T>::data() const {
+template <typename T>
+typename vector<T>::pointer vector<T>::data() const {
   return data_;
 }
 
-template <typename T> bool vector<T>::empty() const { return size_ == 0; }
+template <typename T>
+bool vector<T>::empty() const {
+  return size_ == 0;
+}
 
-template <typename T> typename vector<T>::size_type vector<T>::size() const {
+template <typename T>
+typename vector<T>::size_type vector<T>::size() const {
   return size_;
 }
 
@@ -90,9 +99,9 @@ typename vector<T>::size_type vector<T>::max_size() const {
   return capacity_;
 }
 
-template <typename T> void vector<T>::reserve(const size_type size) {
-  if (size < capacity_)
-    return;
+template <typename T>
+void vector<T>::reserve(const size_type size) {
+  if (size < capacity_) return;
 
   auto new_data = new value_type[size];
   // memcpy(new_data, data_, size_ * sizeof(value_type));
@@ -107,7 +116,8 @@ typename vector<T>::size_type vector<T>::capacity() const {
   return capacity_;
 }
 
-template <typename T> void vector<T>::shrink_to_fit() {
+template <typename T>
+void vector<T>::shrink_to_fit() {
   if (size_ < capacity_) {
     auto new_data = new value_type[size_];
     std::copy(this->begin(), this->end(), new_data);
@@ -117,9 +127,9 @@ template <typename T> void vector<T>::shrink_to_fit() {
   }
 }
 
-template <typename T> void vector<T>::clear() {
-  for (int i = 0; i < size_; ++i)
-    this->data_[i] = T();
+template <typename T>
+void vector<T>::clear() {
+  for (int i = 0; i < size_; ++i) this->data_[i] = T();
   size_ = 0;
 }
 
@@ -143,7 +153,8 @@ typename vector<T>::iterator vector<T>::insert(iterator pos,
   return iterator(data_ + index);
 }
 
-template <typename T> void vector<T>::erase(iterator pos) {
+template <typename T>
+void vector<T>::erase(iterator pos) {
   int index = pos - this->begin();
 
   if (index >= size_)
@@ -158,7 +169,8 @@ template <typename T> void vector<T>::erase(iterator pos) {
   size_--;
 }
 
-template <typename T> void vector<T>::push_back(const_reference value) {
+template <typename T>
+void vector<T>::push_back(const_reference value) {
   if (size_ == capacity_) {
     reserve(capacity_ * 2);
   }
@@ -167,14 +179,15 @@ template <typename T> void vector<T>::push_back(const_reference value) {
   size_++;
 }
 
-template <typename T> void vector<T>::pop_back() {
-  if (size_ == 0)
-    throw std::out_of_range("Vector Error: Index out of range");
+template <typename T>
+void vector<T>::pop_back() {
+  if (size_ == 0) throw std::out_of_range("Vector Error: Index out of range");
   data_[size_ - 1] = T();
   size_--;
 }
 
-template <typename T> void vector<T>::swap(vector &other) noexcept {
+template <typename T>
+void vector<T>::swap(vector &other) noexcept {
   std::swap(size_, other.size_);
   std::swap(data_, other.data_);
   std::swap(capacity_, other.capacity_);
@@ -205,4 +218,4 @@ void vector<T>::insert_many_back(Args &&...args) {
   }
 }
 
-} // namespace s21
+}  // namespace s21

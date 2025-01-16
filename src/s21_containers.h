@@ -12,4 +12,4 @@
 #include "./stack/s21_stack.h"
 #include "./vector/s21_vector.h"
 
-#endif // S21_CONTAINERS_H
+#endif  // S21_CONTAINERS_H
