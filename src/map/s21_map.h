@@ -7,133 +7,133 @@ namespace s21 {
 
 template <typename Key, typename Value>
 class map {
-   public:
-    class Iterator;
-    class ConstIterator;
+ public:
+  class Iterator;
+  class ConstIterator;
 
-    using key_type = Key;
-    using mapped_type = Value;
-    using value_type = std::pair<const key_type, mapped_type>;
-    using reference = value_type&;
-    using const_reference = const value_type&;
-    using iterator = Iterator;
-    using const_iterator = ConstIterator;
-    using size_type = size_t;
+  using key_type = Key;
+  using mapped_type = Value;
+  using value_type = std::pair<const key_type, mapped_type>;
+  using reference = value_type&;
+  using const_reference = const value_type&;
+  using iterator = Iterator;
+  using const_iterator = ConstIterator;
+  using size_type = size_t;
 
-    // Constructors
+  // Constructors
 
-    map() = default;
-    map(std::initializer_list<value_type> const& items);
+  map() = default;
+  map(std::initializer_list<value_type> const& items);
 
-    map(const map& m);
+  map(const map& m);
 
-    map(map&& m) noexcept;
-    ~map() = default;
-    map& operator=(map&& m) noexcept;
+  map(map&& m) noexcept;
+  ~map() = default;
+  map& operator=(map&& m) noexcept;
 
-    // Map element access
+  // Map element access
 
-    mapped_type& at(const key_type& key);
-    mapped_type& operator[](const key_type& key);
+  mapped_type& at(const key_type& key);
+  mapped_type& operator[](const key_type& key);
 
-    // Map iterators
+  // Map iterators
 
-    iterator begin();
-    iterator end();
+  iterator begin();
+  iterator end();
 
-    const_iterator cbegin() const;
-    const_iterator cend() const;
+  const_iterator cbegin() const;
+  const_iterator cend() const;
 
-    // Map Capacity
+  // Map Capacity
 
-    [[nodiscard]] bool empty() const;
-    [[nodiscard]] size_type size() const;
-    [[nodiscard]] static size_type max_size();
+  [[nodiscard]] bool empty() const;
+  [[nodiscard]] size_type size() const;
+  [[nodiscard]] static size_type max_size();
 
-    // Map Modifiers
+  // Map Modifiers
 
-    void clear();
+  void clear();
 
-    std::pair<iterator, bool> insert(const value_type& value);
-    std::pair<iterator, bool> insert(const key_type& key,
-                                     const mapped_type& value);
-    std::pair<iterator, bool> insert_or_assign(const key_type& key,
-                                               const mapped_type& value);
+  std::pair<iterator, bool> insert(const value_type& value);
+  std::pair<iterator, bool> insert(const key_type& key,
+                                   const mapped_type& value);
+  std::pair<iterator, bool> insert_or_assign(const key_type& key,
+                                             const mapped_type& value);
 
-    void erase(iterator pos);
-    void erase(key_type key);
-    void swap(map& other) noexcept;
-    void merge(map& other);
+  void erase(iterator pos);
+  void erase(key_type key);
+  void swap(map& other) noexcept;
+  void merge(map& other);
 
-    iterator find(const key_type& key);
+  iterator find(const key_type& key);
 
-    bool contains(const key_type& key) const;
+  bool contains(const key_type& key) const;
 
-    template <typename... Args>
-    vector<std::pair<iterator, bool>> insert_many(Args&&... args);
+  template <typename... Args>
+  vector<std::pair<iterator, bool>> insert_many(Args&&... args);
 
-   private:
-    BinaryTree<key_type, mapped_type> tree;
+ private:
+  BinaryTree<key_type, mapped_type> tree;
 };
 
 template <typename Key, typename Value>
 class map<Key, Value>::Iterator {
-   public:
-    using iterator_category = std::random_access_iterator_tag;
-    using value_type = map<Key, Value>::value_type;
-    using difference_type = std::ptrdiff_t;
-    using pointer = TreeNode<Key, Value>*;
-    using reference = TreeNode<Key, Value>&;
+ public:
+  using iterator_category = std::random_access_iterator_tag;
+  using value_type = map<Key, Value>::value_type;
+  using difference_type = std::ptrdiff_t;
+  using pointer = TreeNode<Key, Value>*;
+  using reference = TreeNode<Key, Value>&;
 
-    Iterator() : iterator() {}
+  Iterator() : iterator() {}
 
-    explicit Iterator(const TreeNode<Key, Value>* ptr)
-        : iterator(BinaryTree<Key, Value>::Iterator(ptr)) {}
-    explicit Iterator(typename BinaryTree<Key, Value>::Iterator itr)
-        : iterator(itr) {}
+  explicit Iterator(const TreeNode<Key, Value>* ptr)
+      : iterator(BinaryTree<Key, Value>::Iterator(ptr)) {}
+  explicit Iterator(typename BinaryTree<Key, Value>::Iterator itr)
+      : iterator(itr) {}
 
-    value_type operator*() const;
+  value_type operator*() const;
 
-    Iterator& operator++();
-    Iterator& operator--();
-    Iterator operator++(int);
-    Iterator operator--(int);
+  Iterator& operator++();
+  Iterator& operator--();
+  Iterator operator++(int);
+  Iterator operator--(int);
 
-    bool operator==(const Iterator& other) const;
-    bool operator!=(const Iterator& other) const;
+  bool operator==(const Iterator& other) const;
+  bool operator!=(const Iterator& other) const;
 
-   protected:
-    typename BinaryTree<Key, Value>::Iterator iterator;
+ protected:
+  typename BinaryTree<Key, Value>::Iterator iterator;
 };
 
 template <typename Key, typename Value>
 class map<Key, Value>::ConstIterator {
-   public:
-    using iterator_category = std::random_access_iterator_tag;
-    using value_type = map<Key, Value>::value_type;
-    using difference_type = std::ptrdiff_t;
-    using pointer = TreeNode<Key, Value>*;
-    using reference = TreeNode<Key, Value>&;
+ public:
+  using iterator_category = std::random_access_iterator_tag;
+  using value_type = map<Key, Value>::value_type;
+  using difference_type = std::ptrdiff_t;
+  using pointer = TreeNode<Key, Value>*;
+  using reference = TreeNode<Key, Value>&;
 
-    ConstIterator() : iterator() {}
+  ConstIterator() : iterator() {}
 
-    explicit ConstIterator(const TreeNode<Key, Value>* ptr)
-        : iterator(BinaryTree<Key, Value>::Iterator(ptr)) {}
-    explicit ConstIterator(typename BinaryTree<Key, Value>::ConstIterator itr)
-        : iterator(itr) {}
+  explicit ConstIterator(const TreeNode<Key, Value>* ptr)
+      : iterator(BinaryTree<Key, Value>::Iterator(ptr)) {}
+  explicit ConstIterator(typename BinaryTree<Key, Value>::ConstIterator itr)
+      : iterator(itr) {}
 
-    value_type operator*() const;
+  value_type operator*() const;
 
-    ConstIterator& operator++();
-    ConstIterator& operator--();
-    ConstIterator operator++(int);
-    ConstIterator operator--(int);
+  ConstIterator& operator++();
+  ConstIterator& operator--();
+  ConstIterator operator++(int);
+  ConstIterator operator--(int);
 
-    bool operator==(const ConstIterator& other) const;
-    bool operator!=(const ConstIterator& other) const;
+  bool operator==(const ConstIterator& other) const;
+  bool operator!=(const ConstIterator& other) const;
 
-   protected:
-    typename BinaryTree<Key, Value>::ConstIterator iterator;
+ protected:
+  typename BinaryTree<Key, Value>::ConstIterator iterator;
 };
 
 }  // namespace s21

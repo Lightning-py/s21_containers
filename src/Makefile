@@ -2,20 +2,22 @@
 
 CC=g++ -std=c++17
 
-SOURCES=./array/* ./linked_list/* ./map/* ./queue/* ./set/* ./shared/* ./stack/* ./vector/*
+SOURCES=./array/* ./binary_tree/* ./linked_list/* ./map/* ./multiset/* ./queue/* ./set/* ./shared/* ./stack/* ./vector/*
+HEADERS=./s21_containers.h ./s21_containersplus.h
 
-TESTS=./test/test.cpp
+TESTS=./test/*
+TEST_FILE=./test/test.cpp
 
-FILES= $(SOURCES) ./test/*
+FILES= $(SOURCES) $(TESTS) $(HEADERS)
 
 CFLAGS= -o test -Wall -Wextra
-LDFLAGS=-lpthread -lgtest --coverage -ld_classic
+LDFLAGS=-lpthread -lgtest --coverage
 VALGRIND_FLAGS=--leak-check=full
 
 
 test: $(FILES)
 	mkdir -p build
-	$(CC) $(TESTS) -o ./build/test_ $(LDFLAGS)
+	$(CC) $(TEST_FILE) -o ./build/test_ $(LDFLAGS)
 	./build/test_
 
 gcov_report: test
